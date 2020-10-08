@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from rest_framework_swagger.views import get_swagger_view
 
 urlpatterns_api = [
@@ -26,6 +26,7 @@ urlpatterns_api = [
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', get_swagger_view(title='API', patterns=urlpatterns_api)),
+    path('weather/', include('weather.urls')),
 ]
 
 urlpatterns += urlpatterns_api
