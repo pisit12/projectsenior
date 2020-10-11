@@ -1,14 +1,13 @@
 from django.shortcuts import render
 from rest_framework import viewsets, mixins
 # Create your views here.
-from rest_framework.viewsets import GenericViewSet
 
 from weather.models import ReportStation, WeatherData
-from weather.serializers import ReportStationSerializer, WeatherDataSerializer
+from weather.serializers import ReportStationSerializer
 
 
 class ReportStationViewSet(mixins.ListModelMixin,
-                   GenericViewSet):
+                           viewsets.GenericViewSet):
     queryset = ReportStation.objects.all()
     serializer_class = ReportStationSerializer
     # def get_queryset(self):
