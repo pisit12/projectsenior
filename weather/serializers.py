@@ -1,6 +1,6 @@
 
 from rest_framework import serializers
-from .models import ReportStation, WeatherData
+from .models import ReportStation, WeatherData, WeatherHistory
 
 
 class ReportStationSerializer(serializers.ModelSerializer):
@@ -19,4 +19,8 @@ class WeatherDataSerializer(serializers.ModelSerializer):
             , 'wind_speed', 'wind_gust', 'rain_1h'
             , 'rain_24h', 'rain_mn', 'luminosity']
 
-
+class WeatherHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        Model = WeatherHistory
+        fields = ['temp_avg', 'temp_max', 'temp_min']
+        read_only_fields = ['temp_avg', 'temp_max', 'temp_min']

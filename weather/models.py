@@ -26,17 +26,17 @@ class ReportStation(models.Model):
 
 class WeatherData(models.Model):
     name = models.CharField(max_length=60 ,default='')
-    temp = models.FloatField(default=0.0)
-    time = models.FloatField(default=0.0)
-    pressure = models.FloatField(default=0.0)
-    humidity = models.FloatField(default=0.0)
-    wind_direction = models.FloatField(default=0.0)
-    wind_speed = models.FloatField(default=0.0)
-    wind_gust = models.FloatField(default=0.0)
-    rain_1h = models.FloatField(default=0.0)
+    temp = models.FloatField(default=0.00)
+    time = models.FloatField(default=0.00)
+    pressure = models.FloatField(default=0.00)
+    humidity = models.FloatField(default=0.00)
+    wind_direction = models.FloatField(default=0.00)
+    wind_speed = models.FloatField(default=0.00)
+    wind_gust = models.FloatField(default=0.00)
+    rain_1h = models.FloatField(default=0.00)
     rain_24h = models.FloatField(default=0) #,min_value=1, max_value=24
-    rain_mn = models.FloatField(default=0.0)
-    luminosity = models.FloatField(default=0.0)
+    rain_mn = models.FloatField(default=0.00)
+    luminosity = models.FloatField(default=0.00)
 
     def __str__(self):
         return '[weather id:{}] {}'.format(self.id, self.name)
@@ -51,3 +51,9 @@ class WeatherData(models.Model):
     #             kwargs.pop('force_insert')
     #
     #     super(ReportStation, self).save(*args, **kwargs)
+
+class WeatherHistory(models.Model):
+    temp_avg = models.FloatField(default=0.00)
+    temp_max = models.FloatField(default=0.00)
+    temp_min = models.FloatField(default=0.00)
+
