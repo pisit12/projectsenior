@@ -1,4 +1,5 @@
-from django.db import models
+from django.db import models, IntegrityError
+
 
 # Create your models here.
 class ReportStation(models.Model):
@@ -23,6 +24,13 @@ class ReportStation(models.Model):
 
     def __str__(self):
         return '[weather id:{}] {}'.format(self.id, self.name)
+
+    @staticmethod
+    def push(name):
+        try:
+            ReportStation.objects.create(name=name).save()
+        except IntegrityError:
+            pass
 
 class WeatherData(models.Model):
     name = models.CharField(max_length=60 ,default='')
