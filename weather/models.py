@@ -5,11 +5,11 @@ from django.db import models, IntegrityError
 class ReportStation(models.Model):
     name = models.CharField(max_length=60)
     type_choices = [
-            ('AIS', 'a'),
-            ('APRS station', 'l'),
-            ('APRS item', 'i'),
-            ('APRS object', 'o'),
-            ('weather station', 'w'),
+            ('a', 'AIS'),
+            ('l', 'APRS station'),
+            ('i', 'APRS item'),
+            ('o', 'APRS object'),
+            ('w', 'weather station'),
         ]
     type = models.CharField(
             max_length=16,
@@ -25,17 +25,17 @@ class ReportStation(models.Model):
     def __str__(self):
         return '[weather id:{}] {}'.format(self.id, self.name)
 
-    @staticmethod
-    def push(name):
-        try:
-            ReportStation.objects.create(name=name).save()
-        except IntegrityError:
-            pass
+    # @staticmethod
+    # def push(name):
+    #     try:
+    #         ReportStation.objects.create(name=name).save()
+    #     except IntegrityError:
+    #         pass
 
 class WeatherData(models.Model):
     name = models.CharField(max_length=60 ,default='')
-    temp = models.FloatField(default=0.00)
     time = models.FloatField(default=0.00)
+    temp = models.FloatField(default=0.00)
     pressure = models.FloatField(default=0.00)
     humidity = models.FloatField(default=0.00)
     wind_direction = models.FloatField(default=0.00)

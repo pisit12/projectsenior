@@ -16,21 +16,31 @@ class ReportStationViewSet(mixins.ListModelMixin,
     #     # return ReportStation.objects.all()
     # ReportStation.push()
     URL = "https://api.aprs.fi/api/get?&what=loc&apikey=149072.z1vz5VxaYwb5VkAm&format=json"
-
-    # location given here
-    name = "OH7RDA"
-    # lat = "63.06717"
-    # defining a params dict for the parameters to be sent to the API
+    name = "FW6985"
     PARAMS = {'name': name}
-    # sending get request and saving the response as response object
     r = requests.get(url=URL, params=PARAMS)
-    # extracting data in json format
-    # extracting latitude, longitude and formatted address
-    # of the first matching location
-    # latitude = data['entries']['lat']
-    # longitude = data['entries']['lng']
-    # # printing the output
-    # print("Latitude:%s\nLongitude:%s"% (latitude, longitude))
-    data=r
-    ReportStation.push(r.json())
-    
+    data=r.json()
+    a=data['entries'][0]
+    for i in a:
+        if i == 'name':
+            name=a[i]
+            # ReportStation.objects.create(name=name)
+        if i == 'type':
+            type=a[i]
+            # ReportStation.objects.create(type=type)
+        if i == 'time':
+            time=a[i]
+            # ReportStation.objects.create(time=time)
+        if i == 'lasttime':
+            lasttime=a[i]
+            # ReportStation.objects.create(lasttime=lasttime)
+        if i == 'lat':
+            lat=a[i]
+            # ReportStation.objects.create(lat=lat)
+        if i == 'lng':
+            lng=a[i]
+            # ReportStation.objects.create(lng=lng)
+    ReportStation.objects.create(name=name, type=type, time=time,
+                                 lasttime=lasttime, lat=lat, lng=lng).save()
+    #     วนรับเอา
+

@@ -9,4 +9,4 @@ class ReportStationAdmin(admin.ModelAdmin):
 
 @admin.register(WeatherData)
 class WeatherDataAdmin(admin.ModelAdmin):
-    list_display = ('name' ,)
+    list_display = ('name' , 'temp')
