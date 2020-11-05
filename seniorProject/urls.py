@@ -23,12 +23,16 @@ urlpatterns_api = [
     path('weather/', include('weather.urls')),
 ]
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', get_swagger_view(title='API', patterns=urlpatterns_api)),
-    path('reportstation/', include('weather.urls')),
-    path('weatherdata/', include('weather.urls')),
 ]
 
 urlpatterns += urlpatterns_api
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+# path('reportstation/', include('weather.urls')),
+    # path('weatherdata/', include('weather.urls')),
+    # path('search/', include('weather.urls'))

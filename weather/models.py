@@ -1,9 +1,15 @@
 from django.db import models, IntegrityError
+import os.path
+from django.core.validators import MaxValueValidator, MinValueValidator
+
 
 
 # Create your models here.
+from django.utils import timezone
+
+
 class ReportStation(models.Model):
-    name = models.CharField(max_length=60)
+    name = models.CharField(max_length=60 ,default='')
     type_choices = [
             ('a', 'AIS'),
             ('l', 'APRS station'),
@@ -20,47 +26,34 @@ class ReportStation(models.Model):
     lasttime = models.IntegerField(default=0)
     lat = models.FloatField(default=0.00000)
     lng = models.FloatField(default=0.00000)
-    # cover = models.ImageField(null=True, blank=True)
 
     def __str__(self):
-        return '[weather id:{}] {}'.format(self.id, self.name)
+        return '[weather report id:{}] {}'.format(self.id, self.name)
 
-    # @staticmethod
-    # def push(name):
-    #     try:
-    #         ReportStation.objects.create(name=name).save()
-    #     except IntegrityError:
-    #         pass
+
 
 class WeatherData(models.Model):
     name = models.CharField(max_length=60 ,default='')
-    time = models.FloatField(default=0.00)
-    temp = models.FloatField(default=0.00)
-    pressure = models.FloatField(default=0.00)
-    humidity = models.FloatField(default=0.00)
-    wind_direction = models.FloatField(default=0.00)
-    wind_speed = models.FloatField(default=0.00)
-    wind_gust = models.FloatField(default=0.00)
-    rain_1h = models.FloatField(default=0.00)
-    rain_24h = models.FloatField(default=0) #,min_value=1, max_value=24
-    rain_mn = models.FloatField(default=0.00)
-    luminosity = models.FloatField(default=0.00)
+    time = models.IntegerField(default=0, null=True)
+    temp = models.FloatField(default=0.00, null=True)
+    pressure = models.FloatField(default=0.00, null=True)
+    humidity = models.FloatField(default=0.00, null=True)
+    wind_direction = models.FloatField(default=0.00, null=True)
+    wind_speed = models.FloatField(default=0.00, null=True)
+    wind_gust = models.FloatField(default=0.00, null=True)
+    rain_1h = models.FloatField(default=0.00, null=True)
+    rain_24h = models.FloatField(default=0, null=True) #,min_value=1, max_value=24
+    rain_mn = models.FloatField(default=0.00, null=True)
+    luminosity = models.FloatField(default=0.00, null=True)
+
+    # created = models.DateTimeField(auto_now_add=True)
+    # date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return '[weather id:{}] {}'.format(self.id, self.name)
-    # Model Save override to set id as filename
-    # def save(self, *args, **kwargs):
-    #     if self.id is None:
-    #         cover = self.cover_file
-    #         self.cover_file = None
-    #         super(ReportStation, self).save(*args, **kwargs)
-    #         self.cover_file = cover
-    #         if 'force_insert' in kwargs:
-    #             kwargs.pop('force_insert')
-    #
-    #     super(ReportStation, self).save(*args, **kwargs)
+        return '[weather data id:{}] {}'.format(self.id, self.name)
 
 class WeatherHistory(models.Model):
+    # history_id = models.ForeignKey('WeatherData', on_delete=models.CASCADE, null=True)
     temp_avg = models.FloatField(default=0.00)
     temp_max = models.FloatField(default=0.00)
     temp_min = models.FloatField(default=0.00)

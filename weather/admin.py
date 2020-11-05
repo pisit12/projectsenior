@@ -5,8 +5,8 @@ from .models import ReportStation, WeatherData
 
 @admin.register(ReportStation)
 class ReportStationAdmin(admin.ModelAdmin):
-    list_display = ('name' , 'type')
+    list_display = ('name' , 'lasttime')
 
 @admin.register(WeatherData)
 class WeatherDataAdmin(admin.ModelAdmin):
-    list_display = ('name' , 'temp')
+    list_display = ('name' , 'time')
