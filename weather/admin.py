@@ -1,7 +1,11 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import ReportStation, WeatherData
+from .models import ReportStation, WeatherData ,ListNameStation
+
+@admin.register(ListNameStation)
+class ListNameStationAdmin(admin.ModelAdmin):
+    list_display = ('name_stations' ,)
 
 @admin.register(ReportStation)
 class ReportStationAdmin(admin.ModelAdmin):
@@ -10,3 +14,4 @@ class ReportStationAdmin(admin.ModelAdmin):
 @admin.register(WeatherData)
 class WeatherDataAdmin(admin.ModelAdmin):
     list_display = ('name' , 'time')
+

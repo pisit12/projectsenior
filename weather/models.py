@@ -7,6 +7,9 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 # Create your models here.
 from django.utils import timezone
 
+class ListNameStation(models.Model):
+    name_stations = models.CharField(max_length=60 ,default='')
+
 
 class ReportStation(models.Model):
     name = models.CharField(max_length=60 ,default='')
@@ -53,7 +56,7 @@ class WeatherData(models.Model):
         return '[weather data id:{}] {}'.format(self.id, self.name)
 
 class WeatherHistory(models.Model):
-    # history_id = models.ForeignKey('WeatherData', on_delete=models.CASCADE, null=True)
+    # history_id = models.ForeignKey(WeatherData, on_delete=models.CASCADE, null=True)
     temp_avg = models.FloatField(default=0.00)
     temp_max = models.FloatField(default=0.00)
     temp_min = models.FloatField(default=0.00)

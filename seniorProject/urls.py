@@ -27,6 +27,7 @@ urlpatterns_api = [
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', get_swagger_view(title='API', patterns=urlpatterns_api)),
+    # path('listnamestation/', include('weather.urls')),
 ]
 
 urlpatterns += urlpatterns_api
