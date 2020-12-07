@@ -33,6 +33,7 @@ class ReportStation(models.Model):
     lasttime = models.IntegerField(default=0)
     lat = models.FloatField(default=0.00000)
     lng = models.FloatField(default=0.00000)
+    comment = models.CharField(max_length=200 ,default='')
 
     def __str__(self):
         return '[weather report id:{}] {}'.format(self.id, self.name)
