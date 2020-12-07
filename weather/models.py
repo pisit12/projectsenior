@@ -8,10 +8,14 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
 
 class ListNameStation(models.Model):
+    # namestation_id = models.ForeignKey('namestation_id',on_delete=models.CASCADE, null=True)
     name_stations = models.CharField(max_length=60 ,default='')
 
+    def __str__(self):
+        return '[list name station id:{}] {}'.format(self.id, self.name)
 
 class ReportStation(models.Model):
+    # reportstation_id = models.ForeignKey('reportstation_id',on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=60 ,default='')
     type_choices = [
             ('a', 'AIS'),
@@ -36,6 +40,7 @@ class ReportStation(models.Model):
 
 
 class WeatherData(models.Model):
+    # weatherdata_id = models.ForeignKey('weatherdata_id',on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=60 ,default='')
     time = models.IntegerField(default=0, null=True)
     temp = models.FloatField(default=0.00, null=True)
@@ -48,7 +53,7 @@ class WeatherData(models.Model):
     rain_24h = models.FloatField(default=0, null=True) #,min_value=1, max_value=24
     rain_mn = models.FloatField(default=0.00, null=True)
     luminosity = models.FloatField(default=0.00, null=True)
-
+    date_created = models.DateTimeField(auto_now_add=True)
     # created = models.DateTimeField(auto_now_add=True)
     # date_created = models.DateTimeField(auto_now_add=True)
 
@@ -56,8 +61,16 @@ class WeatherData(models.Model):
         return '[weather data id:{}] {}'.format(self.id, self.name)
 
 class WeatherHistory(models.Model):
-    # history_id = models.ForeignKey(WeatherData, on_delete=models.CASCADE, null=True)
+    name = models.CharField(max_length=60 ,default='')
+    history_id = models.ForeignKey(WeatherData,related_name='history',on_delete=models.CASCADE, null=True)
+    temp = models.FloatField(default=0.00, null=True)
     temp_avg = models.FloatField(default=0.00)
     temp_max = models.FloatField(default=0.00)
     temp_min = models.FloatField(default=0.00)
+    date_created = models.DateTimeField(auto_now_add=True)
 
+    # class Meta:
+    #     unique_together = ['history_id']
+
+    def __str__(self):
+        return '[weather history id:{}] {}'.format(self.id, self.name)
