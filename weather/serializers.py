@@ -1,6 +1,6 @@
 
 from rest_framework import serializers
-from .models import ReportStation, WeatherData, WeatherHistory, ListNameStation
+from .models import ReportStation, WeatherData, WeatherHistory, ListNameStation, PmData
 
 
 class ListNameStationSerializer(serializers.ModelSerializer):
@@ -12,8 +12,9 @@ class ListNameStationSerializer(serializers.ModelSerializer):
 class ReportStationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReportStation
-        fields = ['id','name', 'type', 'time', 'lasttime', 'lat', 'lat', 'lng',]
-        read_only_fields = ['id','name', 'reportstation_id', 'type', 'time', 'lasttime', 'lat', 'lat', 'lng',]
+        fields = ['id','name', 'type', 'time', 'lasttime', 'lat', 'lat', 'lng','comment','pm1']
+        read_only_fields = ['id','name', 'reportstation_id', 'type', 'time', 'lasttime', 'lat', 'lat', 'lng','comment'
+                        ,'pm1']
 
 class WeatherDataSerializer(serializers.ModelSerializer):
     # station = ReportStationSerializer(source=station_id)
@@ -36,3 +37,9 @@ class WeatherHistorySerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'name', 'temp', 'temp_avg', 'temp_max', 'temp_min','date_created']
 
 
+class PmDataSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PmData
+        fields = ['id', 'name', 'pm1', 'pm2_5', 'pm10']
+        read_only_field = ['id', 'name', 'pm1', 'pm2_5', 'pm10']

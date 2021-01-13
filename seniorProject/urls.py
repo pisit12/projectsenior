@@ -17,6 +17,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework_swagger.views import get_swagger_view
 
 urlpatterns_api = [
@@ -27,6 +28,7 @@ urlpatterns_api = [
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', get_swagger_view(title='API', patterns=urlpatterns_api)),
+    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),  # <-- And here
     # path('listnamestation/', include('weather.urls')),
 ]
 

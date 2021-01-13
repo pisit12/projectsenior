@@ -19,7 +19,7 @@ class WeatherHistoryViewSet(mixins.RetrieveModelMixin,
                             mixins.ListModelMixin,
                             viewsets.GenericViewSet):
 
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
     queryset = WeatherHistory.objects.all()
     serializer_class = WeatherHistorySerializer
@@ -39,6 +39,7 @@ class WeatherHistoryViewSet(mixins.RetrieveModelMixin,
     # print(list_datas
     for j in list_datas:
         try:
+            # print(j)
             # print(queryset.filter(date_created__date=date.today(),name=j['name']))
             # print(WeatherData.objects.filter(name=j['name']).aggregate(Avg('temp')))
             if list_history ==[]:

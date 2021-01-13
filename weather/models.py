@@ -34,10 +34,12 @@ class ReportStation(models.Model):
     lat = models.FloatField(default=0.00000)
     lng = models.FloatField(default=0.00000)
     comment = models.CharField(max_length=200 ,default='')
+    # pm1 = models.FloatField(default=0.00000)
+    # pm2_5 = models.FloatField(default=0.00000)
+    # pm10 = models.FloatField(default=0.00000)
 
     def __str__(self):
         return '[weather report id:{}] {}'.format(self.id, self.name)
-
 
 
 class WeatherData(models.Model):
@@ -75,3 +77,12 @@ class WeatherHistory(models.Model):
 
     def __str__(self):
         return '[weather history id:{}] {}'.format(self.id, self.name)
+
+class PmData(models.Model):
+    name = models.CharField(max_length=60 ,default='')
+    pm1 = models.FloatField(default=0.00000)
+    pm2_5 = models.FloatField(default=0.00000)
+    pm10 = models.FloatField(default=0.00000)
+
+    def __str__(self):
+        return '[pm id : {}] {}'.format(self.id, self.name)
