@@ -24,32 +24,70 @@ class PmDataViewSet(mixins.RetrieveModelMixin,
     pm_total = []
     # data = {}
     pmdata = []
+    # list_only_pm=list(ReportStation.objects.values('comment'))
+    for i in list_pm:
+        name_pm = i['comment'].split("PM")
+        # print(name_pm)
+        try:
+            # print(name_pm[1])
+            num_pm = re.findall(r'(?<=\[)(.*?)(?=\])', name_pm[1]) # x
+            # print(num_pm)
+            list_key = ['pm1', 'pm2_5', 'pm10'] # j
+            output = {}
+            output.update(i)
+            for j,x in enumerate(num_pm):
+                # print(x)
+                output[list_key[j]] = x
+            # print(output)
+            pmdata.append(output)
+            print(pmdata)
+        except:
 
-    for pm_all in list_pm:
-        pm_total = re.findall(r'(?<=\[)(.*?)(?=\])', pm_all['comment'])
-        list_key = ['pm1', 'pm2_5', 'pm10']
-        output = {}
-        output.update(pm_all)
-        for i, x in enumerate(pm_total):
-            output[list_key[i]] = x
-        # print(output)
-
-        pmdata.append(output)
-    # print(pmdata)
+            pass
 
     for i in pmdata:
         try:
             obj, is_created = PmData.objects.update_or_create(name=i['name'],
-                                                              pm1=i['pm1'],
-                                                              pm2_5=i['pm2_5'],
-                                                              pm10=i['pm10'])
+                                                          pm1=i['pm1'],
+                                                          pm2_5=i['pm2_5'],
+                                                          pm10=i['pm10'])
             for j in i:
                 setattr(obj,j,i[j])
-                print(i[j])
-            obj.save()
+                # print(i[j])
+                obj.save()
         except:
-            print(i)
+            # print(i)
             pass
+
+    # for pm_all in list_pm:
+    #     try:
+    #         pm_total = re.findall(r'(?<=\[)(.*?)(?=\])', pm_all['comment'])
+    #         list_key = ['pm1', 'pm2_5', 'pm10']
+    #         output = {}
+    #         output.update(pm_all)
+    #         for i, x in enumerate(pm_total):
+    #             print(x)
+    #             output[list_key[i]] = x
+    #         # print(output)
+    #         pmdata.append(output)
+    #     # print(pmdata)
+    #     except:
+    #         # print(pm_all)
+    #         pass
+    #
+    # for i in pmdata:
+    #     try:
+    #         obj, is_created = PmData.objects.update_or_create(name=i['name'],
+    #                                                           pm1=i['pm1'],
+    #                                                           pm2_5=i['pm2_5'],
+    #                                                           pm10=i['pm10'])
+    #         for j in i:
+    #             setattr(obj,j,i[j])
+    #             # print(i[j])
+    #         obj.save()
+    #     except:
+    #         # print(i)
+    #         pass
 
 
 
