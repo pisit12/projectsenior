@@ -15,7 +15,7 @@ class WeatherDataViewSet(mixins.RetrieveModelMixin,
                          mixins.ListModelMixin,
                          viewsets.GenericViewSet):
 
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
     queryset = WeatherData.objects.all()
     serializer_class = WeatherDataSerializer
@@ -23,37 +23,37 @@ class WeatherDataViewSet(mixins.RetrieveModelMixin,
     filter_backends = [SearchFilter]
     search_fields = ['id']
 
-    # URL = "https://api.aprs.fi/api/get?"
-    #
-    # queryset_list_name = ListNameStation.objects.all()
-    #
-    # station_names = queryset_list_name.values_list('name_stations',)
-    #
-    # # station_names_id = queryset_list_name.values('id')
-    # list_names = list(station_names)
-    # str_names = ""
-    # for j in list_names:
-    #     str_names += join(j, ",") + ","
-    # names = str_names.split(",")
-    # chunked_names = chunk(names, 20)
-    # # entries=[]
-    #
-    # for j in chunked_names:
-    #     name = join(j, ",")
-    #     what = "wx"
-    #     apikey = "149072.z1vz5VxaYwb5VkAm"
-    #     format = "json"
-    #     PARAMS = {'name': name, 'what': what, 'apikey': apikey, 'format': format}
-    #     r = requests.get(url=URL, params=PARAMS)
-    #     data = r.json()
-    #     a = data['entries']
-    #     if data['entries']==[]:
-    #         print(j)
-    #     for i in a:
-    #         obj,is_created = WeatherData.objects.update_or_create(name=i["name"])
-    #         for j in i:
-    #             setattr(obj,j,i[j])
-    #         obj.save()
+    URL = "https://api.aprs.fi/api/get?"
+    
+    queryset_list_name = ListNameStation.objects.all()
+    
+    station_names = queryset_list_name.values_list('name_stations',)
+    
+    # station_names_id = queryset_list_name.values('id')
+    list_names = list(station_names)
+    str_names = ""
+    for j in list_names:
+        str_names += join(j, ",") + ","
+    names = str_names.split(",")
+    chunked_names = chunk(names, 20)
+    # entries=[]
+    
+    for j in chunked_names:
+        name = join(j, ",")
+        what = "wx"
+        apikey = "149072.z1vz5VxaYwb5VkAm"
+        format = "json"
+        PARAMS = {'name': name, 'what': what, 'apikey': apikey, 'format': format}
+        r = requests.get(url=URL, params=PARAMS)
+        data = r.json()
+        a = data['entries']
+        if data['entries']==[]:
+            print(j)
+        for i in a:
+            obj,is_created = WeatherData.objects.update_or_create(name=i["name"])
+            for j in i:
+                setattr(obj,j,i[j])
+            obj.save()
 
 ########################################
 

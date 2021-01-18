@@ -19,7 +19,7 @@ class WeatherHistoryViewSet(mixins.RetrieveModelMixin,
                             mixins.ListModelMixin,
                             viewsets.GenericViewSet):
 
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
     queryset = WeatherHistory.objects.all()
     serializer_class = WeatherHistorySerializer

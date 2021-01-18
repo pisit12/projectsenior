@@ -1,4 +1,4 @@
-import self as self
+# import self as self
 from django.shortcuts import render
 from rest_framework import viewsets, mixins, status
 # Create your views here.
@@ -17,7 +17,7 @@ class ListNameStationViewSet(mixins.CreateModelMixin,
                             mixins.ListModelMixin,
                             viewsets.GenericViewSet):
 
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
     queryset = ListNameStation.objects.all()
     serializer_class = ListNameStationSerializer
