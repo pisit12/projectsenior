@@ -24,11 +24,11 @@ class WeatherDataViewSet(mixins.RetrieveModelMixin,
     search_fields = ['id']
 
     URL = "https://api.aprs.fi/api/get?"
-    
+
     queryset_list_name = ListNameStation.objects.all()
-    
+
     station_names = queryset_list_name.values_list('name_stations',)
-    
+
     # station_names_id = queryset_list_name.values('id')
     list_names = list(station_names)
     str_names = ""
@@ -37,7 +37,7 @@ class WeatherDataViewSet(mixins.RetrieveModelMixin,
     names = str_names.split(",")
     chunked_names = chunk(names, 20)
     # entries=[]
-    
+
     for j in chunked_names:
         name = join(j, ",")
         what = "wx"
