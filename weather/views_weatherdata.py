@@ -15,7 +15,7 @@ class WeatherDataViewSet(mixins.RetrieveModelMixin,
                          mixins.ListModelMixin,
                          viewsets.GenericViewSet):
 
-    permission_classes = (IsAuthenticated,)
+    #permission_classes = (IsAuthenticated,)
 
     queryset = WeatherData.objects.all()
     serializer_class = WeatherDataSerializer
