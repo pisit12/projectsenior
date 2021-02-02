@@ -5,7 +5,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, mixins, status
 # Create your views here.
 from rest_framework.filters import SearchFilter
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 from weather.models import ListNameStation
@@ -24,6 +24,7 @@ class ListNameStationViewSet(mixins.CreateModelMixin,
     # print(token.key)
     queryset = ListNameStation.objects.all()
     serializer_class = ListNameStationSerializer
+    permission_classes = [AllowAny]
     filter_backends = [SearchFilter]
     search_fields = ['name']
 
@@ -34,7 +35,7 @@ class ListNameStationViewSet(mixins.CreateModelMixin,
     chunked_names = chunk(names, 1)
     for j in chunked_names:
         name = join(j, ",")
-        obj, is_created = ListNameStation.objects.get_or_create(name_stations=name)
+        obj, is_created = ListNameStation.objects.get_or_create(name=name)
         obj.save()
 
     def create(self, request, *args, **kwargs):

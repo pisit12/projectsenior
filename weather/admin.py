@@ -6,7 +6,7 @@ from .models import ReportStation, WeatherData, ListNameStation, WeatherHistory,
 
 @admin.register(ListNameStation)
 class ListNameStationAdmin(admin.ModelAdmin):
-    list_display = ('name_stations' ,)
+    list_display = ('name' ,)
 
 @admin.register(ReportStation)
 class ReportStationAdmin(admin.ModelAdmin):

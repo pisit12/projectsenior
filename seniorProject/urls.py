@@ -20,6 +20,7 @@ from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework_swagger.views import get_swagger_view
 
+
 urlpatterns_api = [
     path('weather/', include('weather.urls')),
 ]

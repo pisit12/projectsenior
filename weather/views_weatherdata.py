@@ -4,10 +4,10 @@ from pydash import chunk, join
 from rest_framework import viewsets, mixins
 # Create your views here.
 from rest_framework.filters import SearchFilter
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from weather.models import WeatherData, ListNameStation
+from weather.models import WeatherData, ListNameStation, PmData
 from weather.serializers import WeatherDataSerializer
 
 
@@ -18,83 +18,105 @@ class WeatherDataViewSet(mixins.RetrieveModelMixin,
     # permission_classes = (IsAuthenticated,)
 
     queryset = WeatherData.objects.all()
+    # print(queryset)
     serializer_class = WeatherDataSerializer
+    permission_classes = [AllowAny]
 
     filter_backends = [SearchFilter]
-    search_fields = ['id']
+    search_fields = ['name','id']
 
-    URL = "https://api.aprs.fi/api/get?"
+    queryset_pm = PmData.objects.all()
+    queryset_names = ListNameStation.objects.all()
 
-    queryset_list_name = ListNameStation.objects.all()
+    def list(self, request, queryset_pm=queryset_pm,queryset_names=queryset_names, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        # print(queryset_pm)
+        list_names = list(queryset_names.values_list('name'))
+        list_pm = list(queryset_pm.values('name','pm1','pm2_5','pm10'))
+        # dict_data = {}
+        str_names = ""
+        for j in list_names:
+            str_names += join(j, ",") + ","
+        names = str_names.split(",")
+        chunked_names = chunk(names, 20)
+        URL = "https://api.aprs.fi/api/get?"
+        for j in chunked_names:
+            name = join(j, ",")
+            what = "wx"
+            apikey = "149072.z1vz5VxaYwb5VkAm"
+            format = "json"
+            PARAMS = {'name': name, 'what': what, 'apikey': apikey, 'format': format}
+            response = requests.get(url=URL, params=PARAMS)
+            data = response.json()
+            aprs_datas = data['entries']
+            dict_data = {}
+            # if data['entries']==[]:
+            #     print(j)
+            for i in aprs_datas:
+                # print(i['name'])
+                # print(i)
+                for pm in list_pm:
+                    if pm['name'] == i['name']:
+                        i.update(pm)
+                    pass
+                #     print(j['name'])
+                #     print(j)
+            # for i in aprs_datas:
+                obj, is_created = WeatherData.objects.update_or_create(name=i["name"])
+                # print(obj)
+                for j in i:
+                    setattr(obj,j,i[j])
+                obj.save()
+            # for pm in list_pm:
+            #     obj = WeatherData.objects.update(name=pm["name"])
+            #     for j in pm:
+            #         setattr(obj,j,pm[j])
+            #         print(j)
+            #         print(pm[j])
 
-    station_names = queryset_list_name.values_list('name_stations',)
-
-    # station_names_id = queryset_list_name.values('id')
-    list_names = list(station_names)
-    str_names = ""
-    for j in list_names:
-        str_names += join(j, ",") + ","
-    names = str_names.split(",")
-    chunked_names = chunk(names, 20)
-    # entries=[]
-
-    for j in chunked_names:
-        name = join(j, ",")
-        what = "wx"
-        apikey = "149072.z1vz5VxaYwb5VkAm"
-        format = "json"
-        PARAMS = {'name': name, 'what': what, 'apikey': apikey, 'format': format}
-        r = requests.get(url=URL, params=PARAMS)
-        data = r.json()
-        a = data['entries']
-        if data['entries']==[]:
-            print(j)
-        for i in a:
-            obj,is_created = WeatherData.objects.update_or_create(name=i["name"])
-            for j in i:
-                setattr(obj,j,i[j])
-            obj.save()
-
-########################################
 
 
-    # station_names_id = list(queryset_list_name.values('id', 'name_stations'))
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+# print(i['name'])
+
+#############################################
+    # URL = "https://api.aprs.fi/api/get?"
     #
-    # chunked_names = chunk(station_names_id, 20)
-    # name_test = "HS9AN-10,HS9AS-10,HS9AT-10,HS8AK-10,HSAT-10"
-    # names = name_test.split(",")
-    # chunked_names = chunk(names, 1)
+    # queryset_list_name = ListNameStation.objects.all()
+    #
+    # station_names = queryset_list_name.values_list('name_stations',)
+    #
+    # # station_names_id = queryset_list_name.values('id')
+    # list_names = list(station_names)
+    # str_names = ""
+    # for j in list_names:
+    #     str_names += join(j, ",") + ","
+    # names = str_names.split(",")
+    # chunked_names = chunk(names, 20)
+    # # entries=[]
+    #
     # for j in chunked_names:
     #     name = join(j, ",")
-    #     first_edit_name = join(j, ",")
-    #     name = ListNameStation.objects.filter(id=j['id'])
-    #     print(name)
-    #     # name=first_edit_name(name=j['name_station'])
-    #     # print(name)
     #     what = "wx"
     #     apikey = "149072.z1vz5VxaYwb5VkAm"
     #     format = "json"
     #     PARAMS = {'name': name, 'what': what, 'apikey': apikey, 'format': format}
-        # r = requests.get(url=URL, params=PARAMS)
-        # data = r.json()
-        # test
-        # data = {'command': 'get', 'result': 'ok', 'found': 20, 'what': 'wx', 'entries': [
-        #     {'name': 'HS9AN-10', 'time': '1605399033', 'temp': '32.0', 'pressure': '1000.0', 'humidity': '75',
-        #      'wind_direction': '0', 'wind_speed': '0.0', 'wind_gust': '0.0', 'luminosity': '0'},
-        #     {'name': 'HS9AS-10', 'time': '1605398611', 'temp': '27.5', 'pressure': '1008.0', 'humidity': '65',
-        #      'wind_direction': '0', 'wind_speed': '0.0', 'wind_gust': '0.0', 'luminosity': '0'},
-        #     {'name': 'HS9AT-10', 'time': '1605397381', 'temp': '28.9', 'pressure': '1006.0', 'humidity': '88',
-        #      'wind_direction': '0', 'wind_speed': '0.0', 'wind_gust': '0.0', 'luminosity': '0'},
-        #     {'name': 'HS8AK-10', 'time': '1605398873', 'temp': '31.0', 'pressure': '1010.0', 'humidity': '70',
-        #      'wind_direction': '0', 'wind_speed': '0.0', 'wind_gust': '0.0', 'luminosity': '0'},
-        #     {'name': 'HS8AT-10', 'time': '1605398790', 'temp': '25.5', 'pressure': '1008.0', 'humidity': '66',
-        #      'wind_direction': '0', 'wind_speed': '0.0', 'wind_gust': '0.0', 'luminosity': '0'},
-        #     {'name': 'E23JWE-1', 'time': '1605398915', 'temp': '31.0', 'pressure': '1009.0', 'humidity': '69',
-        #      'wind_direction': '0', 'wind_speed': '0.0', 'wind_gust': '0.0', 'luminosity': '17'}]}
-        # a = data['entries']
-        # for i in a:
-        #     obj,is_created = WeatherData.objects.update_or_create(name=i["name"])
-        #     for j in i:
-        #         setattr(obj,j,i[j])
-        #     # print(obj)
-        #     obj.save()
+    #     r = requests.get(url=URL, params=PARAMS)
+    #     data = r.json()
+    #     a = data['entries']
+    #     if data['entries']==[]:
+    #         print(j)
+    #     for i in a:
+    #         obj,is_created = WeatherData.objects.update_or_create(name=i["name"])
+    #         for j in i:
+    #             setattr(obj,j,i[j])
+    #         obj.save()
+
+########################################

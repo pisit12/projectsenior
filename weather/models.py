@@ -9,7 +9,7 @@ from django.utils import timezone
 
 class ListNameStation(models.Model):
     # namestation_id = models.ForeignKey('namestation_id',on_delete=models.CASCADE, null=True)
-    name_stations = models.CharField(max_length=60 ,default='')
+    name = models.CharField(max_length=60 ,default='')
 
     def __str__(self):
         return '[list name station id:{}] {}'.format(self.id, self.name)
@@ -34,9 +34,6 @@ class ReportStation(models.Model):
     lat = models.FloatField(default=0.00000)
     lng = models.FloatField(default=0.00000)
     comment = models.CharField(max_length=200 ,default='')
-    # pm1 = models.FloatField(default=0.00000)
-    # pm2_5 = models.FloatField(default=0.00000)
-    # pm10 = models.FloatField(default=0.00000)
 
     def __str__(self):
         return '[weather report id:{}] {}'.format(self.id, self.name)
@@ -56,7 +53,12 @@ class WeatherData(models.Model):
     rain_24h = models.FloatField(default=0, null=True) #,min_value=1, max_value=24
     rain_mn = models.FloatField(default=0.00, null=True)
     luminosity = models.FloatField(default=0.00, null=True)
+    pm1 = models.FloatField(default=0.00000)
+    pm2_5 = models.FloatField(default=0.00000)
+    pm10 = models.FloatField(default=0.00000)
     date_created = models.DateTimeField(auto_now_add=True)
+
+
     # created = models.DateTimeField(auto_now_add=True)
     # date_created = models.DateTimeField(auto_now_add=True)
 
@@ -70,6 +72,10 @@ class WeatherHistory(models.Model):
     temp_avg = models.FloatField(default=0.00)
     temp_max = models.FloatField(default=0.00)
     temp_min = models.FloatField(default=0.00)
+    pm1_avg = models.FloatField(default=0.00)
+    pm1_max = models.FloatField(default=0.00)
+    pm1_min = models.FloatField(default=0.00)
+    pm1 = models.FloatField(default=0.00)
     date_created = models.DateTimeField(auto_now_add=True)
 
     # class Meta:
