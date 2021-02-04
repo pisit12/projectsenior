@@ -60,7 +60,7 @@ class ReportStationViewSet(mixins.RetrieveModelMixin,
             # print(aprs_data)
             for i in aprs_data:
                 obj, is_created = ReportStation.objects.update_or_create(name=i["name"])
-                print(obj)
+                # print(obj)
                 for j in i:
                     setattr(obj, j, i[j])
                     # print(obj)
@@ -74,7 +74,7 @@ class ReportStationViewSet(mixins.RetrieveModelMixin,
         #     .1: 8000 / weather / reportstation /?search = HS9AN - 10
 
         page = self.paginate_queryset(queryset)
-        print(page)
+        # print(page)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)

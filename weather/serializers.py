@@ -32,11 +32,30 @@ class WeatherDataSerializer(serializers.ModelSerializer):
 
 class WeatherHistorySerializer(serializers.ModelSerializer):
     # history= serializers.PrimaryKeyRelatedField(source='history_id', read_only=True)
-
+    # date_created = serializers.SerializerMethodField()
     class Meta:
         model = WeatherHistory
-        fields = ['id', 'name', 'temp', 'temp_avg', 'temp_max', 'temp_min','pm1','pm1_avg','pm1_max','pm1_min','date_created']
-        read_only_fields = ['id', 'name', 'temp', 'temp_avg', 'temp_max', 'temp_min','pm1','pm1_avg','pm1_max','pm1_min','date_created']
+        fields = [
+            'id', 'name',
+            'temp', 'temp_avg', 'temp_max', 'temp_min',
+            'pressure', 'pressure_avg', 'pressure_max', 'pressure_min',
+            'humidity', 'humidity_avg', 'humidity_max', 'humidity_min',
+            'pm1', 'pm1_avg', 'pm1_max', 'pm1_min',
+            'pm2_5', 'pm2_5_avg', 'pm2_5_max', 'pm2_5_min',
+            'pm10', 'pm10_avg', 'pm10_max', 'pm10_min',
+            'date_created']
+        read_only_fields = [
+            'id', 'name',
+            'temp', 'temp_avg', 'temp_max', 'temp_min',
+            'pressure', 'pressure_avg', 'pressure_max', 'pressure_min',
+            'humidity', 'humidity_avg', 'humidity_max', 'humidity_min',
+            'pm1', 'pm1_avg', 'pm1_max', 'pm1_min',
+            'pm2_5', 'pm2_5_avg', 'pm2_5_max', 'pm2_5_min',
+            'pm10', 'pm10_avg', 'pm10_max', 'pm10_min',
+            'date_created']
+        ordering = ['-date_created']
+
+# 'name', 'temp','pressure','humidity' ,'pm1','pm2_5','pm10', 'date_created
 
 
 class PmDataSerializer(serializers.ModelSerializer):
