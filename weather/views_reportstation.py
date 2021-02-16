@@ -33,6 +33,32 @@ class ReportStationViewSet(mixins.RetrieveModelMixin,
 
     queryset_names = ListNameStation.objects.all()
 
+    list_names = list(queryset_names.values_list('name'))
+    str_names = ""
+    for j in list_names:
+        str_names += join(j, ",") + ","
+    names = str_names.split(",")
+    chunked_names = chunk(names, 20)
+    URL = "https://api.aprs.fi/api/get?"
+    for j in chunked_names:
+        name = join(j, ",")
+        what = "loc"
+        apikey = "149072.z1vz5VxaYwb5VkAm"
+        format = "json"
+        PARAMS = {'name': name, 'what': what, 'apikey': apikey, 'format': format}
+        response = requests.get(url=URL, params=PARAMS)
+        data = response.json()
+        aprs_data = data['entries']
+        # print(aprs_data)
+        for i in aprs_data:
+            obj, is_created = ReportStation.objects.update_or_create(name=i["name"])
+            # print(obj)
+            for j in i:
+                setattr(obj, j, i[j])
+                # print(obj)
+                # print(j)
+            obj.save()
+
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
@@ -41,31 +67,6 @@ class ReportStationViewSet(mixins.RetrieveModelMixin,
     def list(self, request,queryset_names=queryset_names, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         # print(queryset_names)
-        list_names = list(queryset_names.values_list('name'))
-        str_names = ""
-        for j in list_names:
-            str_names += join(j, ",") + ","
-        names = str_names.split(",")
-        chunked_names = chunk(names, 20)
-        URL = "https://api.aprs.fi/api/get?"
-        for j in chunked_names:
-            name = join(j, ",")
-            what = "loc"
-            apikey = "149072.z1vz5VxaYwb5VkAm"
-            format = "json"
-            PARAMS = {'name': name, 'what': what, 'apikey': apikey, 'format': format}
-            response = requests.get(url=URL, params=PARAMS)
-            data = response.json()
-            aprs_data = data['entries']
-            # print(aprs_data)
-            for i in aprs_data:
-                obj, is_created = ReportStation.objects.update_or_create(name=i["name"])
-                # print(obj)
-                for j in i:
-                    setattr(obj, j, i[j])
-                    # print(obj)
-                    # print(j)
-                obj.save()
 
 
         # if 'name' in request.GET:

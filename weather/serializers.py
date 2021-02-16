@@ -1,6 +1,6 @@
 
 from rest_framework import serializers
-from .models import ReportStation, WeatherData, WeatherHistory, ListNameStation, PmData
+from .models import ReportStation, WeatherData, WeatherHistory, ListNameStation, PmData, ForecastWeather
 
 
 class ListNameStationSerializer(serializers.ModelSerializer):
@@ -64,3 +64,11 @@ class PmDataSerializer(serializers.ModelSerializer):
         model = PmData
         fields = ['id', 'name', 'pm1', 'pm2_5', 'pm10']
         read_only_field = ['id', 'name', 'pm1', 'pm2_5', 'pm10']
+
+
+class ForecastSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ForecastWeather
+        fields = ['id', 'name', 'temp' , 'date_created']
+        read_only_field = ['id', 'name', 'temp' , 'date_created']

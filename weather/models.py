@@ -110,3 +110,11 @@ class PmData(models.Model):
 
     def __str__(self):
         return '[pm id : {}] {}'.format(self.id, self.name)
+
+class ForecastWeather(models.Model):
+    name = models.CharField(max_length=60, default='')
+    temp = models.FloatField(default=0.00, null=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return '[pm id : {}] {}'.format(self.id, self.name)
