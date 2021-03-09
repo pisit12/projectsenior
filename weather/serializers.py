@@ -12,9 +12,9 @@ class ListNameStationSerializer(serializers.ModelSerializer):
 class ReportStationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReportStation
-        fields = ['id','name', 'type', 'time', 'lasttime', 'lat', 'lat', 'lng','comment']
+        fields = ['id','name', 'type', 'time', 'lasttime', 'lat', 'lat', 'lng','comment',]
         read_only_fields = ['id','name', 'reportstation_id', 'type', 'time', 'lasttime', 'lat', 'lat', 'lng','comment'
-                        ]
+            , ]
 
 class WeatherDataSerializer(serializers.ModelSerializer):
     # station = ReportStationSerializer(source=station_id)

@@ -4,6 +4,10 @@ from fbprophet import Prophet
 import matplotlib.pyplot as plt
 from rest_framework import viewsets, mixins, status
 # Create your views here.
+from rest_framework.filters import SearchFilter
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+
 from weather.models import ReportStation, ForecastWeather
 from weather.serializers import ForecastSerializer
 
@@ -12,8 +16,13 @@ class ForecastViewset(mixins.CreateModelMixin,
                       mixins.RetrieveModelMixin,
                       mixins.ListModelMixin,
                       viewsets.GenericViewSet):
+
     queryset = ForecastWeather.objects.all()
     serializer_class = ForecastSerializer
+    permission_classes = [AllowAny]
+    filter_backends = [SearchFilter]
+    search_fields = ['name']
+
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
@@ -22,8 +31,10 @@ class ForecastViewset(mixins.CreateModelMixin,
 
         pd.plotting.register_matplotlib_converters()
 
-        sales_df = pd.read_csv('./retail_sales.csv',
+        sales_df = pd.read_csv('E:/project/new/seniorProject/weather/retail_sales.csv',
                             index_col='date', parse_dates=True)
+        # sales_df = open('/retail_sales.csv')
+
         sales_df.head()
 
         df = sales_df.reset_index()

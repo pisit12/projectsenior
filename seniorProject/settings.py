@@ -25,7 +25,7 @@ SECRET_KEY = '%azncrui^ex5llbj1sw!#*du9pios#p5(2w%q$e_*ykre0m_g+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['161.246.5.197', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'weather',
+    "django_apscheduler",
 
 ]
 
@@ -65,8 +66,6 @@ CORS_ORIGIN_REGEX_WHITELIST = [
     'http://localhost:8000',
 ]
 
-ALLOWED_HOSTS = ['161.246.5.197', 'localhost', '127.0.0.1']
-
 ROOT_URLCONF = 'seniorProject.urls'
 
 TEMPLATES = [
@@ -87,6 +86,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'seniorProject.wsgi.application'
 
+SCHEDULER_CONFIG = {
+    "apscheduler.jobstores.default": {
+        "class": "django_apscheduler.jobstores:DjangoJobStore"
+    },
+    'apscheduler.executors.processpool': {
+        "type": "threadpool"
+    },
+}
+SCHEDULER_AUTOSTART = True
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -140,6 +148,14 @@ REST_FRAMEWORK = {
     # 'DEFAULT_AUTHENTICATION_CLASSES': [
     #     'rest_framework.authentication.TokenAuthentication',  # <-- And here
     # ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.ScopedRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'blogs': '4/hour',
+        'brust' : '4/hour',
+
+    }
 }
 
 # Static files (CSS, JavaScript, Images)
@@ -149,3 +165,5 @@ STATIC_URL = '/static/'
 BASE_MEDIA = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = "/media/"
+
+

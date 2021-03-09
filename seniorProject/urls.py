@@ -20,6 +20,7 @@ from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework_swagger.views import get_swagger_view
 
+from weather import views_csv
 
 urlpatterns_api = [
     path('weather/', include('weather.urls')),
@@ -30,6 +31,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', get_swagger_view(title='API', patterns=urlpatterns_api)),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),  # <-- And here
+    path('export/',views_csv.export, name='export')
     # path('listnamestation/', include('weather.urls')),
 ]
 
