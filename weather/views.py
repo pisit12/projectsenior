@@ -7,7 +7,7 @@ from pydash import join, chunk
 from rest_framework import viewsets
 
 from django.http import HttpResponse
-from weather.models import ReportStation, ListNameStation, PmData, WeatherData
+from weather.models import ReportStation, ListNameStation, PmData, WeatherData, WeatherHistory
 from weather.serializers import ReportStationSerializer, WeatherDataSerializer
 
 
@@ -37,7 +37,7 @@ class WeatherViewset(viewsets.ModelViewSet):
         for j in chunked_names:
             name = join(j, ",")
             what = "loc"
-            apikey = "149072.z1vz5VxaYwb5VkAm"
+            apikey = "155078.nzsdK4hEn2R2n13o"
             format = "json"
             PARAMS = {'name':  name, 'what': what, 'apikey': apikey, 'format': format}
             api_request = requests.get(url=URL, params=PARAMS)
@@ -49,8 +49,6 @@ class WeatherViewset(viewsets.ModelViewSet):
                 # print(obj)
                 for j in i:
                     setattr(obj, j, i[j])
-                    # print(obj)
-                    # print(j)
                 obj.save()
 
     def save_weatherdata(self):
@@ -69,7 +67,7 @@ class WeatherViewset(viewsets.ModelViewSet):
         for j in chunked_names:
             name = join(j, ",")
             what = "wx"
-            apikey = "149072.z1vz5VxaYwb5VkAm"
+            apikey = "155078.nzsdK4hEn2R2n13o"
             format = "json"
             PARAMS = {'name': name, 'what': what, 'apikey': apikey, 'format': format}
             response = requests.get(url=URL, params=PARAMS)
@@ -90,22 +88,28 @@ class WeatherViewset(viewsets.ModelViewSet):
                     setattr(obj, j, i[j])
                 obj.save()
 
+    def export(self):
+        # Create the HttpResponse object with the appropriate CSV header.
+        with open('test.csv', 'w') as f:
+            writer = csv.writer(f)
+            writer.writerow(['id', 'name','temp', 'temp_avg', 'temp_max', 'temp_min',
+                            'pressure', 'pressure_avg', 'pressure_max','pressure_min',
+                            'humidity', 'humidity_avg', 'humidity_max',
+                            'humidity_min','pm1', 'pm1_avg', 'pm1_max', 'pm1_min',
+                            'pm2_5', 'pm2_5_avg', 'pm2_5_max', 'pm2_5_min',
+                            'pm10', 'pm10_avg', 'pm10_max', 'pm10_min', ])
+            for history in WeatherHistory.objects.all().values_list('id', 'name',
+                                                                  'temp', 'temp_avg', 'temp_max', 'temp_min',
+                                                                  'pressure', 'pressure_avg', 'pressure_max',
+                                                                  'pressure_min',
+                                                                  'humidity', 'humidity_avg', 'humidity_max',
+                                                                  'humidity_min',
+                                                                  'pm1', 'pm1_avg', 'pm1_max', 'pm1_min',
+                                                                  'pm2_5', 'pm2_5_avg', 'pm2_5_max', 'pm2_5_min',
+                                                                  'pm10', 'pm10_avg', 'pm10_max', 'pm10_min', ):
+                writer.writerow(history)
 
-    # name = models.CharField(max_length=60, default='')
-    # type_choices = [
-    #     ('a', 'AIS'),
-    #     ('l', 'APRS station'),
-    #     ('i', 'APRS item'),
-    #     ('o', 'APRS object'),
-    #     ('w', 'weather station'),
-    # ]
-    # type = models.CharField(
-    #     max_length=16,
-    #     choices=type_choices,
-    #     default='',
-    # )
-    # time = models.IntegerField(default=0)
-    # lasttime = models.IntegerField(default=0)
-    # lat = models.FloatField(default=0.00000)
-    # lng = models.FloatField(default=0.00000)
-    # comment = models.CharField(max_length=200, default='')
+    def call_schedu(self):
+        self.save_reportstation()
+        self.save_weatherdata()
+        self.export()

@@ -31,7 +31,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', get_swagger_view(title='API', patterns=urlpatterns_api)),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),  # <-- And here
-    path('export/',views_csv.export, name='export')
+    # path('export/',views_csv.export, name='export')
     # path('listnamestation/', include('weather.urls')),
 ]
 

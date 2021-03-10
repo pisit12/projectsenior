@@ -64,7 +64,7 @@ class WeatherData(models.Model):
     pm1 = models.FloatField(default=0.00000)
     pm2_5 = models.FloatField(default=0.00000)
     pm10 = models.FloatField(default=0.00000)
-    date_created = models.DateTimeField(auto_now_add=True)
+    # date_created = models.DateTimeField(auto_now_add=True)
 
     # created = models.DateTimeField(auto_now_add=True)
     # date_created = models.DateTimeField(auto_now_add=True)
@@ -75,7 +75,7 @@ class WeatherData(models.Model):
 
 class WeatherHistory(models.Model):
     name = models.CharField(max_length=60, default='')
-    history_id = models.ForeignKey(WeatherData, related_name='history', on_delete=models.CASCADE, null=True)
+    # history_id = models.ForeignKey(WeatherData, related_name='history', on_delete=models.CASCADE, null=True)
     temp = models.FloatField(default=0.00, null=True)
     temp_avg = models.FloatField(default=0.00)
     temp_max = models.FloatField(default=0.00)
@@ -100,12 +100,12 @@ class WeatherHistory(models.Model):
     pm10_avg = models.FloatField(default=0.00)
     pm10_max = models.FloatField(default=0.00)
     pm10_min = models.FloatField(default=0.00)
-    date_created = models.DateTimeField(auto_now_add=True)
+    # date_created = models.DateTimeField(auto_now_add=True)
 
     # class Meta:
     #     unique_together = ['history_id']
     class Meta:
-        ordering = ['id', '-date_created']
+        ordering = ['id', ]
 
     def __str__(self):
         return '[weather history id:{}] {}'.format(self.id, self.name)
@@ -124,7 +124,7 @@ class PmData(models.Model):
 class ForecastWeather(models.Model):
     name = models.CharField(max_length=60, default='')
     temp = models.FloatField(default=0.00, null=True)
-    date_created = models.DateTimeField(auto_now_add=True)
+
 
     def __str__(self):
         return '[pm id : {}] {}'.format(self.id, self.name)
