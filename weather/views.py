@@ -90,7 +90,7 @@ class WeatherViewset(viewsets.ModelViewSet):
 
     def export(self):
         # Create the HttpResponse object with the appropriate CSV header.
-        with open('test.csv', 'w') as f:
+        with open('weather_history.csv', 'w') as f:
             writer = csv.writer(f)
             writer.writerow(['id', 'name','temp', 'temp_avg', 'temp_max', 'temp_min',
                             'pressure', 'pressure_avg', 'pressure_max','pressure_min',

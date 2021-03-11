@@ -23,15 +23,10 @@ class PmDataViewSet(mixins.RetrieveModelMixin,
     # search_fields = ['id']
 
     queryset_station = ReportStation.objects.all()
-    # list_pm = list(ReportStation.objects.values('name','comment'))
-    # print(list_pm)
 
     list_pm = list(queryset_station.values('name', 'comment'))
-     # print(list_pm)
     pm_total = []
-      # data = {}
     pmdata = []
-       # # list_only_pm=list(ReportStation.objects.values('comment'))
     for i in list_pm:
             # print(i['comment'])
         name_pm = i['comment'].split("PM")

@@ -36,7 +36,7 @@ class ReportStation(models.Model):
     lat = models.FloatField(default=0.00000)
     lng = models.FloatField(default=0.00000)
     comment = models.CharField(max_length=200, default='')
-    # date_created = models.DateTimeField(default=datetime.now, blank=True)
+    date_created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     class Meta:
         ordering = ['id']
@@ -64,10 +64,7 @@ class WeatherData(models.Model):
     pm1 = models.FloatField(default=0.00000)
     pm2_5 = models.FloatField(default=0.00000)
     pm10 = models.FloatField(default=0.00000)
-    # date_created = models.DateTimeField(auto_now_add=True)
-
-    # created = models.DateTimeField(auto_now_add=True)
-    # date_created = models.DateTimeField(auto_now_add=True)
+    date_created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def __str__(self):
         return '[weather data id:{}] {}'.format(self.id, self.name)
@@ -100,7 +97,7 @@ class WeatherHistory(models.Model):
     pm10_avg = models.FloatField(default=0.00)
     pm10_max = models.FloatField(default=0.00)
     pm10_min = models.FloatField(default=0.00)
-    # date_created = models.DateTimeField(auto_now_add=True)
+    date_created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     # class Meta:
     #     unique_together = ['history_id']

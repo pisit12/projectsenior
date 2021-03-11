@@ -12,8 +12,9 @@ class ListNameStationSerializer(serializers.ModelSerializer):
 class ReportStationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReportStation
-        fields = ['id','name', 'type', 'time', 'lasttime', 'lat', 'lat', 'lng','comment',]
-        read_only_fields = ['id','name', 'reportstation_id', 'type', 'time', 'lasttime', 'lat', 'lat', 'lng','comment'
+        fields = ['id','name', 'type', 'time', 'lasttime', 'lat', 'lat', 'lng','comment','date_created']
+        read_only_fields = ['id','name', 'reportstation_id', 'type', 'time', 'lasttime',
+                            'lat', 'lat', 'lng','comment', 'date_created'
             , ]
 
 class WeatherDataSerializer(serializers.ModelSerializer):
@@ -24,11 +25,11 @@ class WeatherDataSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'temp', 'time', 'pressure', 'humidity', 'wind_direction',
             'wind_speed', 'wind_gust', 'rain_1h',
             'rain_24h', 'rain_mn', 'luminosity',
-            'pm1', 'pm2_5', 'pm10',]
+            'pm1', 'pm2_5', 'pm10','date_created']
         read_only_fields = ['id','name','temp', 'time', 'pressure', 'humidity', 'wind_direction',
             'wind_speed', 'wind_gust', 'rain_1h',
             'rain_24h', 'rain_mn', 'luminosity',
-            'pm1', 'pm2_5', 'pm10',]
+            'pm1', 'pm2_5', 'pm10','date_created']
 
 class WeatherHistorySerializer(serializers.ModelSerializer):
     # history= serializers.PrimaryKeyRelatedField(source='history_id', read_only=True)
@@ -42,7 +43,7 @@ class WeatherHistorySerializer(serializers.ModelSerializer):
             'humidity', 'humidity_avg', 'humidity_max', 'humidity_min',
             'pm1', 'pm1_avg', 'pm1_max', 'pm1_min',
             'pm2_5', 'pm2_5_avg', 'pm2_5_max', 'pm2_5_min',
-            'pm10', 'pm10_avg', 'pm10_max', 'pm10_min',
+            'pm10', 'pm10_avg', 'pm10_max', 'pm10_min','date_created',
             ]
         read_only_fields = [
             'id', 'name',
@@ -51,7 +52,7 @@ class WeatherHistorySerializer(serializers.ModelSerializer):
             'humidity', 'humidity_avg', 'humidity_max', 'humidity_min',
             'pm1', 'pm1_avg', 'pm1_max', 'pm1_min',
             'pm2_5', 'pm2_5_avg', 'pm2_5_max', 'pm2_5_min',
-            'pm10', 'pm10_avg', 'pm10_max', 'pm10_min',
+            'pm10', 'pm10_avg', 'pm10_max', 'pm10_min','date_created'
             ]
 
 # 'name', 'temp','pressure','humidity' ,'pm1','pm2_5','pm10', 'date_created
