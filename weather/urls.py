@@ -8,7 +8,7 @@ from weather.views_reportstation import ReportStationViewSet
 from weather.views_weatherdata import WeatherDataViewSet
 from weather.views_weatherhistory import WeatherHistoryViewSet
 from weather.views_pmdata import PmDataViewSet
-from weather.views_forecast import ForecastViewset
+# from weather.views_forecast import ForecastViewset
 
 
 router = routers.DefaultRouter()
@@ -19,7 +19,7 @@ router.register('reportstation', ReportStationViewSet)
 router.register('weatherdata', WeatherDataViewSet)
 router.register('weatherhistory', WeatherHistoryViewSet)
 router.register('pmdata', PmDataViewSet)
-router.register('forecast', ForecastViewset ,basename='forecast')
+# router.register('forecast', ForecastViewset ,basename='forecast')
 router.register('data', WeatherViewset, basename='weather-data')
 
 
