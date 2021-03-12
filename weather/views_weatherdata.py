@@ -93,36 +93,36 @@ class WeatherDataViewSet(mixins.RetrieveModelMixin,
         str_names += join(j, ",") + ","
     names = str_names.split(",")
     chunked_names = chunk(names, 20)
-    URL = "https://api.aprs.fi/api/get?"
-    for j in chunked_names:
-        name = join(j, ",")
-        what = "wx"
-        apikey = "149072.z1vz5VxaYwb5VkAm"
-        format = "json"
-        PARAMS = {'name': name, 'what': what,
-                  'apikey': apikey, 'format': format}
-        response = requests.get(url=URL, params=PARAMS)
-        data = response.json()
-        aprs_datas = data['entries']
-        dict_data = {}
-        # if data['entries']==[]:
-        #     print(j)
-        for i in aprs_datas:
-            # print(i['name'])
-            # print(i)
-            for pm in list_pm:
-                if pm['name'] == i['name']:
-                    i.update(pm)
-                    pass
-                #     print(j['name'])
-                #     print(j)
-            # for i in aprs_datas:
-                obj, is_created = WeatherData.objects.update_or_create(
-                    name=i["name"])
-                # print(obj)
-                for j in i:
-                    setattr(obj, j, i[j])
-                obj.save()
+    # URL = "https://api.aprs.fi/api/get?"
+    # for j in chunked_names:
+    #     name = join(j, ",")
+    #     what = "wx"
+    #     apikey = "149072.z1vz5VxaYwb5VkAm"
+    #     format = "json"
+    #     PARAMS = {'name': name, 'what': what,
+    #               'apikey': apikey, 'format': format}
+    #     response = requests.get(url=URL, params=PARAMS)
+    #     data = response.json()
+    #     aprs_datas = data['entries']
+    #     dict_data = {}
+    #     # if data['entries']==[]:
+    #     #     print(j)
+    #     for i in aprs_datas:
+    #         # print(i['name'])
+    #         # print(i)
+    #         for pm in list_pm:
+    #             if pm['name'] == i['name']:
+    #                 i.update(pm)
+    #                 pass
+    #             #     print(j['name'])
+    #             #     print(j)
+    #         # for i in aprs_datas:
+    #             obj, is_created = WeatherData.objects.update_or_create(
+    #                 name=i["name"])
+    #             # print(obj)
+    #             for j in i:
+    #                 setattr(obj, j, i[j])
+    #             obj.save()
             # for pm in list_pm:
             #     obj = WeatherData.objects.update(name=pm["name"])
             #     for j in pm:
