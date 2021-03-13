@@ -158,7 +158,7 @@ class WeatherViewset(viewsets.ModelViewSet):
             writer = csv.writer(f)
             writer.writerow(['id', 'name','temp', 'temp_avg', 'temp_max', 'temp_min','date_time',])
 
-            for data in WeatherData.objects.all().values_list('id', 'name','temp', 'temp_avg',
+            for data in WeatherHistory.objects.all().values_list('id', 'name','temp', 'temp_avg',
                                                               'temp_max', 'temp_min','date_time', ):
                 writer.writerow(data)
 
