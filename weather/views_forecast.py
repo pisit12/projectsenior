@@ -19,9 +19,6 @@ class ForecastViewset(mixins.CreateModelMixin,
 
     queryset = ForecastWeather.objects.all()
     serializer_class = ForecastSerializer
-    permission_classes = [AllowAny]
-    filter_backends = [SearchFilter]
-    search_fields = ['name']
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -30,23 +27,30 @@ class ForecastViewset(mixins.CreateModelMixin,
         plt.style.use('ggplot')
 
         pd.plotting.register_matplotlib_converters()
+        temp_df = pd.read_csv('D:/Mmaihom/4D/Weather/projectsenior/weather/retail_sales.csv',
+                              index_col='date', parse_dates=True)
+        temp_df.head()
 
-        sales_df = pd.read_csv('E:/project/new/seniorProject/weather/retail_sales.csv',
-                            index_col='date', parse_dates=True)
-        # sales_df = open('/retail_sales.csv')
+        df = temp_df.reset_index()
+        df['cap'] = 40
+        df['floor'] = 0
+        df = df.rename(columns={'date': 'ds', 'temp': 'y'})
 
-        sales_df.head()
+        # ax = plt.gca()
 
-        df = sales_df.reset_index()
-        df.head()
+        # df.set_index('ds').y.plot().figure
+        # plt.show()
+        m = Prophet(daily_seasonality=True)
+        m.fit(df)
+        future = m.make_future_dataframe(periods=3)
+        future['cap'] = 50
+        future['floor'] = 0
+        fcst = m.predict(future)
+        m.plot(fcst)
+        print(fcst)
 
-        df = df.rename(columns={'date': 'ds', 'sales': 'y'})
-        df.head()
-
-        df.set_index('ds').y.plot().figure
-        plt.show()
         page = self.paginate_queryset(queryset)
-            # print(page)
+        # print(page)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
