@@ -1,4 +1,5 @@
 import csv
+import re
 from datetime import datetime, date
 
 from itertools import chain
@@ -62,6 +63,44 @@ class WeatherViewset(viewsets.ModelViewSet):
                 for j in i:
                     setattr(obj, j, i[j])
                 obj.save()
+
+    def save_pm(self):
+        queryset_station = ReportStation.objects.all()
+        list_pm = list(queryset_station.values('name', 'comment'))
+        pm_total = []
+        pmdata = []
+        for i in list_pm:
+            # print(i['comment'])
+            name_pm = i['comment'].split("PM")
+            # print(name_pm)
+            try:
+                # print(name_pm[1])
+                num_pm = re.findall(r'(?<=\[)(.*?)(?=\])', name_pm[1])  # x
+                # print(num_pm)
+                list_key = ['pm1', 'pm2_5', 'pm10']  # j
+                output = {}
+                output.update(i)
+                for j, x in enumerate(num_pm):
+                    # print(x)
+                    output[list_key[j]] = x
+                    # print(output)
+                pmdata.append(output)
+                # print(pmdata)
+            except:
+                pass
+
+        for i in pmdata:
+            try:
+                obj, is_created = PmData.objects.update_or_create(
+                    name=i['name'], pm1=i['pm1'],
+                    pm2_5=i['pm2_5'], pm10=i['pm10'])
+                for j in i:
+                    setattr(obj, j, i[j])
+                    # print(i[j])
+                obj.save()
+            except:
+                # print(i)
+                pass
 
     def save_weatherdata(self):
         queryset_pm = PmData.objects.all()
@@ -164,6 +203,7 @@ class WeatherViewset(viewsets.ModelViewSet):
 
     def call_schedu(self):
         self.save_reportstation()
+        self.save_pm()
         self.save_weatherdata()
         self.history()
         self.export()

@@ -18,7 +18,6 @@ class ListNameStationViewSet(mixins.CreateModelMixin,
                             mixins.RetrieveModelMixin,
                             mixins.ListModelMixin,
                             viewsets.GenericViewSet):
-
     # permission_classes = (IsAuthenticated,) #Token e1d492289c89b9d9ee355d8478f5e1a562f8191b' 9ac769124382e80b4a7e86bca088abccb8b7e671
     # token=Token.objects.create(user=)
     # print(token.key)
@@ -45,21 +44,3 @@ class ListNameStationViewSet(mixins.CreateModelMixin,
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    # l=ListNameStation.objects.all().count()
-    # for i in l:
-    #     p=ListNameStation.objects.get_or_create(name_station=i["name_station"])
-    #     print(p)
-
-
-        # what = "loc"
-        # apikey = "149072.z1vz5VxaYwb5VkAm"
-        # format = "json"
-        # PARAMS = {'name': name, 'what': what, 'apikey': apikey, 'format': format}
-        # r = requests.get(url=URL, params=PARAMS)
-        # data = r.json()
-        # a = data['entries']
-        # for i in a:
-        #     obj, is_created = ListNameStation.objects.get_or_create(name=i["name"])
-        #     for j in i:
-        #         setattr(obj, j, i[j])
-        #     obj.save()
