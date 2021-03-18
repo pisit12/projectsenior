@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 # import datetime
 import os
+import sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -66,6 +67,13 @@ CORS_ORIGIN_REGEX_WHITELIST = [
     'http://localhost:8000',
 ]
 
+
+BASE_URL = "http://localhost:8000"
+
+DEV_SERVER = len(sys.argv) > 1 and sys.argv[1] == "runserver"
+
+USE_NGROK = os.environ.get("USE_NGROK", "False") == "True" and os.environ.get("RUN_MAIN", None) != "true"
+
 ROOT_URLCONF = 'seniorProject.urls'
 
 TEMPLATES = [
@@ -102,9 +110,11 @@ SCHEDULER_AUTOSTART = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': 'E:/project/new/seniorProject/db.sqlite3',
     }
 }
+
+# DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
 
 
 # Password validation
