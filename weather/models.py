@@ -37,6 +37,7 @@ class ReportStation(models.Model):
     lng = models.FloatField(default=0.00000)
     comment = models.CharField(max_length=200, default='')
     date_time = models.DateTimeField(null=True, blank=True)
+    date_timestamp = models.DateTimeField(default=datetime.now, blank=True)
 
     class Meta:
         ordering = ['id']
@@ -65,6 +66,7 @@ class WeatherData(models.Model):
     pm2_5 = models.FloatField(default=0.00000)
     pm10 = models.FloatField(default=0.00000)
     date_time = models.DateTimeField( null=True, blank=True)
+    date_timestamp = models.DateTimeField(default=datetime.now, blank=True)
 
     def __str__(self):
         return '[weather data id:{}] {}'.format(self.id, self.name)
@@ -78,6 +80,7 @@ class WeatherHistory(models.Model):
     temp_max = models.FloatField(default=0.00)
     temp_min = models.FloatField(default=0.00)
     date_time = models.DateTimeField(null=True, blank=True)
+    date_timestamp = models.DateTimeField(default=datetime.now, blank=True)
     # pressure = models.FloatField(default=0.00, null=True)
     # pressure_avg = models.FloatField(default=0.00)
     # pressure_max = models.FloatField(default=0.00)
@@ -101,7 +104,7 @@ class WeatherHistory(models.Model):
     # class Meta:
     #     unique_together = ['history_id']
     class Meta:
-        ordering = ['id', ]
+        ordering = ['-date_time', ]
 
     def __str__(self):
         return '[weather history id:{}] {}'.format(self.id, self.name)
