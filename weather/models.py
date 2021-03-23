@@ -75,7 +75,7 @@ class WeatherData(models.Model):
 class WeatherHistory(models.Model):
     name = models.CharField(max_length=60, default='')
     # history_id = models.ForeignKey(WeatherData, related_name='history', on_delete=models.CASCADE, null=True)
-    temp = models.FloatField(default=0.00, null=True)
+    # temp = models.FloatField(default=0.00, null=True)
     temp_avg = models.FloatField(default=0.00)
     temp_max = models.FloatField(default=0.00)
     temp_min = models.FloatField(default=0.00)

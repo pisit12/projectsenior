@@ -36,7 +36,7 @@ class WeatherHistorySerializer(serializers.ModelSerializer):
         model = WeatherHistory
         fields = [
             'id', 'name',
-            'temp', 'temp_avg', 'temp_max', 'temp_min','date_time','date_timestamp'
+             'temp_avg', 'temp_max', 'temp_min','date_time','date_timestamp'
             # 'pressure', 'pressure_avg', 'pressure_max', 'pressure_min',
             # 'humidity', 'humidity_avg', 'humidity_max', 'humidity_min',
             # 'pm1', 'pm1_avg', 'pm1_max', 'pm1_min',
@@ -45,7 +45,7 @@ class WeatherHistorySerializer(serializers.ModelSerializer):
             ]
         read_only_fields = [
             'id', 'name',
-            'temp', 'temp_avg', 'temp_max', 'temp_min', 'date_time','date_timestamp'
+             'temp_avg', 'temp_max', 'temp_min', 'date_time','date_timestamp'
             # 'id', 'name',
             # 'temp', 'temp_avg', 'temp_max', 'temp_min',
             # 'pressure', 'pressure_avg', 'pressure_max', 'pressure_min',

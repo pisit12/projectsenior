@@ -21,7 +21,7 @@ class WeatherDataAdmin(admin.ModelAdmin):
 
 @admin.register(WeatherHistory)
 class WeatherHistoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'temp')
+    list_display = ('name', 'temp_avg')
 
 
 @admin.register(PmData)
