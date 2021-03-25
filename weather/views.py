@@ -6,9 +6,11 @@ import datetime as dt
 from itertools import chain
 
 import pandas as pd
+import statsmodels.api as sm
 from django.db.models import Avg
 from fbprophet import Prophet
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 import pytz
 import requests
@@ -40,8 +42,8 @@ class WeatherViewset(viewsets.ModelViewSet):
         return list_data
 
     def save_listname(self):
-        queryset = ListNameStation.objects.all()
-        serializer_class = ListNameStationSerializer
+        # queryset = ListNameStation.objects.all()
+        # serializer_class = ListNameStationSerializer
         station_names = "HS9AN-10,HS9AS-10,HS9AT-10,HS8AK-10,HS8AT-10,E23JWE-1,HS8KF-10,HS8INB-1,E29RZQ,HS8KAY,E29AE-8,E29WWT-2,HS8AC-10,HS7AJ-10,HS7AP-10,HS2KYA-5,HS2KYA-1,HS2AB-10,HS2UJE-10,HS2QJJ-14,HS2AR-10,E21TMW-3,E27EHM-3,E22ERY-2,E27HCD-1,E24OWX-2,E27HUQ-3,E23GYM-1,HS0QKD-2,HS2XQB-3,E24CI-1,HS0QKD-3,HS5SQI-1,HS2GJW-1,E21HVV-1,HS2PQV-1,FW6985,FW1926,EW4214,HS1FVL-10,HS1AN-10,E25ECY-1,HS1IFU-13,HS7AT-11,HS7AM-10,E20EHQ-13,HS1HTW-2,HS5GDX-1,HS3PIK-2,FW0368,E27ASY-4,HS1AL-10,APRSTH,HS3RXX-2,HS0QKD-4,E21DII-4,HS4RBS-2,HS3PKX-1,HS3NOQ-12,HS3NOQ-2,HS3PQJ-2,HS3PQJ-1,HS3PQJ-3,HS3LIQ-2,HS5GDX-2,HS3ICB-2,HS0ZGD-1,E23HMS-1,HS3LSE-11,HS3RVL-3,HS3AK-10,HS3MXC-2,HS3AU-10,HS3LSE-5,HS1MHE-1,HS4RAY-1,E24QND-1,E24QFF-1,HS4AP-10,E25HA-1,HS4LWD-1,HS4AC-10,HS4YYZ-1,E24TVS-2,E24TVS-1,E27AH-1,HS4ROI-1,HS4POQ-10,HS6NYW-3,HS6AB-10,E24OWX-1,E24YPM-1,HS6TUX,HS5XSZ-1,HS8JHY-1,HS5AM-10,HS5FXK-2,HS5ZEZ-1,HS5FXK,E28UY-13,DW2642,E22ZMG-1,HS5AC-10,HS5WFI-13"
 
         names = station_names.split(",")
@@ -72,7 +74,7 @@ class WeatherViewset(viewsets.ModelViewSet):
             PARAMS = {'name': name, 'what': what, 'apikey': apikey, 'format': format}
             api_request = requests.get(url=URL, params=PARAMS)
             # print("call api 1")
-            api_request.raise_for_status()
+            # api_request.raise_for_status()
             data_weathers = api_request.json()
             aprs_datas = data_weathers['entries']
             for i in aprs_datas:
@@ -180,7 +182,7 @@ class WeatherViewset(viewsets.ModelViewSet):
                     timezone = pytz.timezone("Asia/Bangkok")
                     try:
                         edit_datedata = data[3].astimezone(timezone)
-                        local_data = edit_datedata.strftime('%m/%d/%Y %H:%M:%S')
+                        local_data = edit_datedata.strftime('%Y-%m-%d')
                         tuple_data = (data[0],data[1],data[2],local_data)
                     except:
                         pass
@@ -193,11 +195,8 @@ class WeatherViewset(viewsets.ModelViewSet):
                     timezone = pytz.timezone("Asia/Bangkok")
                     try:
                         edit_datedata = data[3].astimezone(timezone)
-                        print(edit_datedata)
-                        local_data = edit_datedata.strftime('%m/%d/%Y %H:%M:%S')
-                        print("asdas")
+                        local_data = edit_datedata.strftime('%Y-%m-%d')
                         tuple_data = (data[0],data[1],data[2],local_data)
-                        print(tuple_data)
                     except:
                         pass
                     writer.writerow(tuple_data)
@@ -220,24 +219,18 @@ class WeatherViewset(viewsets.ModelViewSet):
     def add_data_history(self):
         data_df = pd.read_csv('./weather/weather_history.csv')
         # print(data_df)
+        data_df = data_df.reset_index()
+        # df=data_df[['id','name','temp','date_time']].groupby(['name','date_time']).agg({'temp':['mean','max','min']})
         d_f= data_df[['id','name','temp','date_time']].groupby(['name','date_time']).agg({'temp':['mean','max','min']})
-        # df = pd.DataFrame(data_df, ['id','name','temp','date_time'])
         # print(d_f)
-        # print(d_f.count())
-        # print(d_f)
-        # print(type(d_f))
         dict_all={}
         list_data=[]
         for row in d_f.iterrows():
-            # dict_data['name'],dict_data['temp_avg'],dict_data['temp_max'],dict_data['temp_min'],dict_data['date_time']=row[0][0],row[1][1],row[1][2],row[1][3],row[0][1]
-            # print(dict_data)
-            # print(row[1])
             dict_data={}
-
             dict_data['name'],dict_data['temp_avg'],dict_data['temp_max'],dict_data['temp_min'],dict_data['date_time']=row[0][0],row[1][0],row[1][1],row[1][2],row[0][1]
             # print(dict_data['date_time'])
             date_time_str = dict_data['date_time']
-            date_time_obj = dt.datetime.strptime(date_time_str, '%m/%d/%Y %H:%M:%S')
+            date_time_obj = dt.datetime.strptime(date_time_str, '%Y-%m-%d')
             dict_data['date_time'] = date_time_obj
             dict_all.update(dict_data)
             dict_all_copy = dict_all.copy()
@@ -245,226 +238,158 @@ class WeatherViewset(viewsets.ModelViewSet):
         # for i in list_data:
         #     print(type(i['date_time']))
         for data in list_data:
-            obj, is_created = WeatherHistory.objects.update_or_create(name=data["name"])
+            # print(data)
+            obj, is_created = WeatherHistory.objects.update_or_create(name=data["name"],date_time=data['date_time'])
 
             for j in data:
                 setattr(obj, j, data[j])
             obj.save()
 
+        with open('./weather/weather_forecast.csv', 'w') as f:
 
-        # engine = create_engine('sqlite:///db.sqlite3', echo=True)
-        # sqlite_connection = engine.connect()
-        # sqlite_table = "Weather historys"
-        #
-        # d_f.to_sql(sqlite_table,sqlite_connection,if_exists='fail')
-        #
-        # sqlite_connection.close()
+            writer = csv.writer(f)
+            writer.writerow(['id', 'name', 'temp_avg', 'temp_max', 'temp_min','date_time',])
 
-        # for i in len(d_f.yhat[:]):
-        #     print(i)
-
-        # data in len(fcst.yhat[:]
-
-
-        # print(d_f)
-        # print(type(df))
-        # con = sqlite3.connect(":memory:")  # change to 'sqlite:///your_filename.db'
-        # cur = con.cursor()
-        # cur.execute("CREATE TABLE weatherhistory (id, name,temp, date_time);")  # use your column names here
-        # with open('./weather/weather_history.csv', 'r') as f:  # `with` statement available in 2.5+
-        #     dr = csv.DictReader(f)
-        #     print(type(dr))
-        #     print(dr[['id','name','temp','date_time']].groupby(['name','date_time'])).agg({'temp':['mean','max','min']})
-        #     turple={}
-        #     dict_all = {}
-        #     list_all = []
-        #     for i in dr:
-        #         turple['id'],turple['name'],turple['temp'],turple['date_time'] = i['id'], i['name'],i['temp'],i['date_time']
-        #         dict_all.update(turple)
-        #         dict_all_copy = dict_all.copy()
-        #         list_all.append(dict_all_copy)
-        #     for i in list_all:
-        #         print(i)
-            # to_db = [(i['id'], i['name'],i['temp'],i['date_time']) for i in dr]
-        #     print(type(to_db))
-        # print(to_db)
-        # cur.executemany("INSERT INTO weatherhistory (id, name, temp_avg, temp_max, temp_min, date_time, date_timestamp ) VALUES (?, ?);", to_db)
-
-    def history(self):
-        queryset = WeatherHistory.objects.all()
-        queryset_datas = WeatherData.objects.all()
-        list_history = list(queryset.values_list('name', 'temp_avg', 'temp_max', 'temp_min', 'date_time', ))
-        list_datas = list(queryset_datas.values_list('name', 'temp', 'date_time', 'date_timestamp'))
-        dict_all = {}
-        list_all = []
-        # print(list_datas[0][2].date())
-        # print(datetime.today().date())
-        if list_history == []:
-            try:
-                for j in list_datas:
-                    turple = {}
-                    turple['name'] = j[0]
-                    turple['temp_avg'] = j[1]
-                    turple['temp_max'] = j[1]
-                    turple['temp_min'] = j[1]
-                    timezone = pytz.timezone("Asia/Bangkok")
-                    turple['date_time'] = j[2].astimezone(timezone)
-                    dict_all.update(turple)
-                    # print(dict_all)
-                    dict_all_copy = dict_all.copy()
-                    list_all.append(dict_all_copy)
-            except:
-                pass
-        else:
-            for j in list_datas:
-                turple = {}
-                turple['name'] = j[0]
+            for data in WeatherHistory.objects.all().values_list('id', 'name',
+                                                'temp_avg', 'temp_max', 'temp_min','date_time', ):
                 timezone = pytz.timezone("Asia/Bangkok")
-                turple['date_time'] = j[2].astimezone(timezone)
-                for i in list_history:
-                    try:
-                        count = 0
-                        if i[0] == j[0]:
-                            count += 1
-                            turple['temp_avg'] = (i[2] * count + j[1]) / (count + 1)
-                            if i[3] <= j[1]:
-                                turple['temp_max'] = j[1]
-                            if i[3] > j[1]:
-                                turple['temp_max'] = i[3]
-                            if i[4] >= j[1]:
-                                turple['temp_min'] = j[1]
-                            if i[4] < j[1]:
-                                turple['temp_min'] = i[4]
-                            dict_all.update(turple)
-                            dict_all_copy = dict_all.copy()
-                            list_all.append(dict_all_copy)
-                    except:
-                        pass
+                try:
+                    edit_datedata = data[5].astimezone(timezone)
+                    local_data = edit_datedata.strftime('%Y-%m-%d')
+                    tuple_data = (data[0],data[1],data[2],data[3],data[4],local_data)
+                except:
+                    pass
+                writer.writerow(tuple_data)
 
-        for i in list_all:
-            try:
-                obj, is_created = WeatherData.objects.update_or_create(name=i["name"])
+    def test(self):
+        with open('./weather/weather_forecast2.csv', 'w') as f:
 
-                for j in i:
-                    setattr(obj, j, i[j])
-                obj.save()
-                pass
-            except:
-                pass
+            writer = csv.writer(f)
+            writer.writerow(['id', 'name', 'temp_avg', 'temp_max', 'temp_min','date_time',])
 
-    # for j in list_datas:
-    #
-    #     # dict_all.update(j)
-    #     # dict_all_copy = dict_all.copy()
-    #     # list_all.append(dict_all_copy)
-    #     u = WeatherHistory.objects.filter(name=j[0],date_time=j[2])
-    #     print(u)
-    #     # if WeatherHistory.objects.filter(date_time=j[2])
-    #     # print(WeatherHistory.objects.filter(name=j[0],date_time=j[2]))
-    # try:
-    #     pass
-    # except:
-    #     pass
+            for data in WeatherHistory.objects.all().values_list('id', 'name',
+                                                'temp_avg', 'temp_max', 'temp_min','date_time', ):
+                timezone = pytz.timezone("Asia/Bangkok")
+                try:
+                    edit_datedata = data[5].astimezone(timezone)
+                    # print(edit_datedata.date())
+                    # print(type(edit_datedata))
+                    # print(type(datetime.today().date()))
+                    if edit_datedata.date() == datetime.today().date():
+                        # print("gg")
+                        print(edit_datedata)
+                    # local_data = edit_datedata.strftime('%Y-%m-%d %H:%M:%S')
+                    # tuple_data = (data[0],data[1],data[2],data[3],data[4],local_data)
+                except:
+                    pass
+                # writer.writerow(tuple_data)
 
-
-# for j in list_datas:
-#     if list_history == []:
-#         try:
-#             turple={}
-#             turple['name']=j[0]
-#             turple['temp']=j[1]
-#             turple['temp_avg'] = j[1]
-#             turple['temp_max'] = j[1]
-#             turple['temp_min'] = j[1]
-#             timezone = pytz.timezone("Asia/Bangkok")
-#             turple['date_time'] = j[2].astimezone(timezone)
-#             dict_all.update(turple)
-#             # print(dict_all)
-#             dict_all_copy = dict_all.copy()
-#             list_all.append(dict_all_copy)
-#         except:
-#             pass
-#     else:
-#         turple={}
-#         turple['name']=j[0]
-#         turple['temp']=j[1]
-#         timezone = pytz.timezone("Asia/Bangkok")
-#         turple['date_time'] = j[2].astimezone(timezone)
-#
-#         for i in list_history:
-#             try:
-#                 count = 0
-#                 if i[0] == j[0]:
-#                     count += 1
-#                     turple['temp_avg'] = (i[2] * count + j[1]) / (count + 1)
-#                     if i[3] <= j[1]:
-#                         turple['temp_max'] = j[1]
-#                     if i[3] > j[1]:
-#                         turple['temp_max'] = i[3]
-#                     if i[4] >= j[1]:
-#                         turple['temp_min'] = j[1]
-#                     if i[4] < j[1]:
-#                         turple['temp_min'] = i[4]
-#                     dict_all.update(turple)
-#                     dict_all_copy = dict_all.copy()
-#                     list_all.append(dict_all_copy)
-#             except:
-#                 pass
-#
-# for i in list_all:
-#     try:
-#         obj = WeatherHistory.objects.create(name=i['name'])
-#         for j in i:
-#             setattr(obj, j, i[j])
-#         obj.save()
-#         pass
-#     except:
-#         pass
-
-
-
-    def forecast(self):
-        plt.rcParams['figure.figsize'] = (20, 10)
-        plt.style.use('ggplot')
-
+    def forecast(df):
         pd.plotting.register_matplotlib_converters()
-        temp_df = pd.read_csv('./weather/weather_history.csv',
-                          index_col='date_time', parse_dates=True)
-        temp_df.head()
+        plt.rcParams['figure.figsize'] = (20, 10)
+        # plt.style.use('ggplot')
+        sns.set()
+        df = pd.read_csv('./weather/weather_forecast.csv',
+                           parse_dates=True,usecols=['date_time','temp_avg','name'])
+        # df['date_time'] = pd.to_datetime(df['date_time'], format="%Y-%m-%d")
+        # print(df)
+        # if df['date_time']
+        #ต้องแยกชื่อออกมาก่อน แล้วมาพยากรณ์ แล้วค่อยsave
+        # print(df)
+        # d_f = d_f[['name', 'temp_avg', 'date_time']]
+        a=[]
 
-        df = temp_df.reset_index()
-    # print(df)
-        df['cap'] = 40
-        df['floor'] = 0
-        df = df.rename(columns={'date_time': 'ds', 'temp': 'y'})
+        for name in df['name']:
+            # print(name)
 
-    # ax = plt.gca()
-    # df.set_index('ds').y.plot().figure
-    # plt.show()
-        m = Prophet(daily_seasonality=True)
-        m.fit(df)
-        future = m.make_future_dataframe(periods=2)
-        future['cap'] = 50
-        future['floor'] = 0
-        future.tail(5)
-        fcst = m.predict(future)
-        m.plot(fcst)
+            a.append(df[(df['name'] == name)])
+        # print(a)
+        for i in a:
+            for j in i['date_time']:
+                print(type(j))
+
+
+        # for row in d_f.iterrows():
+
+
+        # ax = df.plot()
+        # ax.set_xlim(pd.Timestamp("2021-03-25"), pd.Timestamp("2021-04-05"))
+        # # ax.set_title("2021 KATL Average Air Temperature")
+        # ax.set_xlabel("Date (YYYY-MM)")
+        # ax.set_ylabel("Average Temperature (C)")
+        # ax.plot()
+        # print(type(ax))
+        # decomp = sm.tsa.seasonal_decompose(df, model="additive", freq=365)
+        # decomp.plot()
+        # print(type(d_f))
+        # for index, row in df.iterrows():
+        #     # if isinstance(row.wgs1984_latitude, float):
+        #     row = row.copy()
+        #     target = row.temp_avg
+
+            # print(target)
+            # print(index)
+            # print(index[1])
+
+
+        # names = df['name'].unique().tolist()
+        # print(names)
+        # # print(df)
+        # df.head()
+        # print(type(df))
+
+        # print(df['date_time'])
+        # ax=df.plot()
+        # ax.set_xlim(pd.Timestamp("2021-03-25"), pd.Timestamp("2021-04-05"))
+        # # ax.set_title("2021 KATL Average Air Temperature")
+        # ax.set_xlabel("Date (YYYY-MM)")
+        # ax.set_ylabel("Average Temperature (C)")
+
+
+
+##
+        # print(df)
+        # d_f=df[['id','name','temp','date_time']].groupby(['name']).agg()
+        # print(d_f)
+        #
+        # for row in d_f.iterrows():
+        #     print(row)
+        # print(df)
+        # เอาชื่อ มาแล้ว เรียงวันเอาไปทำนาย ส่วนสถานนีแต่ำม่มีการอัพเดต กฌเท่ากับ none ตามนี้ เดะมาทำ
+##
+
+        # df['cap'] = 40
+        # df['floor'] = 0
+        # df = df.rename(columns={'date_time': 'ds', 'temp': 'y'})
+        # print(df)
+        # m = Prophet(daily_seasonality=True) #model
+        # m.fit(df)
+        # future = m.make_future_dataframe(periods=2)
+        # future['cap'] = 50
+        # future['floor'] = 0
+        # future.tail(5)
+        # fcst = m.predict(future)
+        # m.plot(fcst)
+        # print(fcst)
+
+###
     # len(fcst.yhat[:])
-        print(fcst)
+    #     print(fcst)
     # print(len(fcst.yhat[:]))
     # fcst.yhat[0] แล้ววนลูปถึง  data in len(fcst.yhat[:]
     # fig2 = m.plot_components(fcst)
     # fig1.show()
 
     # plot_plotly(m,fcst)
-        plot_components_plotly(m, fcst).show()
-
+    #     plot_components_plotly(m, fcst).show()
+###
 
     def call_schedu(self):
         self.save_listname()
         self.save_reportstation()
         self.save_pm()
         self.save_weatherdata()
-        self.history()
+        # self.history()
         self.export()
-        self.forecast()
+        self.add_data_history()
+        # self.forecast()
