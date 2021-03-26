@@ -20,9 +20,8 @@ def start():
 
     # weather.add_data_history()
     # weather.test()
-    weather.forecast()
 
-    # scheduler.add_job(weather.call_schedu, trigger="interval", minutes=15)
+    scheduler.add_job(weather.call_schedu, trigger="interval", minutes=15)
     # print(count)
     scheduler.start()
 #schedule.every().seconds.at(":30").do(weather.call_schedu())
