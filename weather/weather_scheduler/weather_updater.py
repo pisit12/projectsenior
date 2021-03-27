@@ -15,8 +15,8 @@ def start():
     # weather.save_reportstation()
     # weather.save_pm()
     # weather.save_weatherdata()
-    # weather.export()
-    # weather.add_data_history()
+    weather.export()
+    weather.add_data_history()
 
     # weather.add_data_history()
     # weather.test()
