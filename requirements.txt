@@ -52,6 +52,7 @@ packaging==20.4
 pandas==1.1.5
 panel==0.9.7
 param==1.9.3
+patsy==0.5.1
 Pillow==8.1.0
 plotly==4.14.3
 pycodestyle==2.6.0
@@ -72,12 +73,14 @@ requests==2.22.0
 retrying==1.3.3
 ruamel.yaml==0.16.10
 ruamel.yaml.clib==0.2.0
+scipy==1.6.2
 selenium==3.141.0
 self==2020.12.3
 setuptools-git==1.2
 simplejson==3.16.0
 six==1.12.0
 sqlparse==0.3.0
+statsmodels==0.12.2
 toml==0.10.2
 tornado==6.0.4
 tqdm==4.56.2
