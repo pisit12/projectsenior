@@ -42,7 +42,6 @@ greenlet==1.0.0
 hijri-converter==2.1.1
 holidays==0.10.5.2
 idna==2.8
-ip==20.2.3
 isort==5.7.0
 itypes==1.1.0
 Jinja2==2.10.1
