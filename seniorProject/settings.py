@@ -26,7 +26,7 @@ SECRET_KEY = '%azncrui^ex5llbj1sw!#*du9pios#p5(2w%q$e_*ykre0m_g+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['161.246.5.197', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['161.246.5.197', 'localhost', '127.0.0.1',]
 
 
 # Application definition
@@ -110,7 +110,7 @@ SCHEDULER_AUTOSTART = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'E:/project/new/seniorProject/db.sqlite3',
+        'NAME': './db.sqlite3',
     }
 }
 
