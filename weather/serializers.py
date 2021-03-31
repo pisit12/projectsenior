@@ -36,23 +36,33 @@ class WeatherHistorySerializer(serializers.ModelSerializer):
         model = WeatherHistory
         fields = [
             'id', 'name',
-             'temp_avg', 'temp_max', 'temp_min','date_time','date_timestamp'
-            # 'pressure', 'pressure_avg', 'pressure_max', 'pressure_min',
-            # 'humidity', 'humidity_avg', 'humidity_max', 'humidity_min',
-            # 'pm1', 'pm1_avg', 'pm1_max', 'pm1_min',
-            # 'pm2_5', 'pm2_5_avg', 'pm2_5_max', 'pm2_5_min',
-            # 'pm10', 'pm10_avg', 'pm10_max', 'pm10_min','date_created',
+             'temp_avg', 'temp_max', 'temp_min',
+            'pressure_avg', 'pressure_max', 'pressure_min'
+            # 'humidity'
+            , 'humidity_avg', 'humidity_max', 'humidity_min'
+            # 'pm1'
+            , 'pm1_avg', 'pm1_max', 'pm1_min',
+            # 'pm2_5',
+            'pm2_5_avg', 'pm2_5_max', 'pm2_5_min',
+            # 'pm10'
+            'pm10_avg', 'pm10_max', 'pm10_min'
+            , 'date_time', 'date_timestamp'
+            # 'date_created',
             ]
         read_only_fields = [
             'id', 'name',
-             'temp_avg', 'temp_max', 'temp_min', 'date_time','date_timestamp'
-            # 'id', 'name',
-            # 'temp', 'temp_avg', 'temp_max', 'temp_min',
-            # 'pressure', 'pressure_avg', 'pressure_max', 'pressure_min',
-            # 'humidity', 'humidity_avg', 'humidity_max', 'humidity_min',
-            # 'pm1', 'pm1_avg', 'pm1_max', 'pm1_min',
-            # 'pm2_5', 'pm2_5_avg', 'pm2_5_max', 'pm2_5_min',
-            # 'pm10', 'pm10_avg', 'pm10_max', 'pm10_min','date_created'
+             'temp_avg', 'temp_max', 'temp_min',
+            'pressure_avg', 'pressure_max', 'pressure_min'
+            # 'humidity'
+            , 'humidity_avg', 'humidity_max', 'humidity_min'
+            # 'pm1'
+            , 'pm1_avg', 'pm1_max', 'pm1_min',
+            # 'pm2_5',
+            'pm2_5_avg', 'pm2_5_max', 'pm2_5_min',
+            # 'pm10'
+            'pm10_avg', 'pm10_max', 'pm10_min'
+            , 'date_time', 'date_timestamp'
+            # 'date_created',
             ]
 
 
@@ -68,5 +78,7 @@ class ForecastSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ForecastWeather
-        fields = ['id', 'name', 'temp' , ]
-        read_only_field = ['id', 'name', 'temp' ,]
+        fields = ['id', 'name', 'model_score' ,'temp_next_day',
+                  'date_next_day','temp_next_twoday','date_next_twoday' ]
+        read_only_field = ['id', 'name', 'model_score' ,'temp_next_day',
+                  'date_next_day','temp_next_twoday','date_next_twoday']

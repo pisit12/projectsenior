@@ -31,4 +31,4 @@ class PmAdmin(admin.ModelAdmin):
 
 @admin.register(ForecastWeather)
 class ForecastAdmin(admin.ModelAdmin):
-    list_display = ('name', 'temp')
+    list_display = ('name',)
