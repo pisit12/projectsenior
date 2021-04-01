@@ -37,7 +37,8 @@ class ReportStation(models.Model):
     lng = models.FloatField(default=0.00000)
     comment = models.CharField(max_length=200, default='')
     date_time = models.DateTimeField(null=True, blank=True)
-    date_timestamp = models.DateTimeField(default=datetime.now, blank=True)
+    # date_timestamp = models.DateTimeField(default=datetime.now, blank=True)
+    day = models.CharField(max_length=60, default='')
 
     class Meta:
         ordering = ['id']
@@ -66,7 +67,8 @@ class WeatherData(models.Model):
     pm2_5 = models.FloatField(default=0.00000)
     pm10 = models.FloatField(default=0.00000)
     date_time = models.DateTimeField( null=True, blank=True)
-    date_timestamp = models.DateTimeField(default=datetime.now, blank=True)
+    # date_timestamp = models.DateTimeField(default=datetime.now, blank=True)
+    day = models.CharField(max_length=60, default='')
 
     def __str__(self):
         return '[weather data id:{}] {}'.format(self.id, self.name)
@@ -76,34 +78,33 @@ class WeatherHistory(models.Model):
     name = models.CharField(max_length=60, default='')
     # history_id = models.ForeignKey(WeatherData, related_name='history', on_delete=models.CASCADE, null=True)
     # temp = models.FloatField(default=0.00, null=True)
-    temp_avg = models.FloatField(default=0.00)
+    # temp_avg = models.FloatField(default=0.00)
     temp_max = models.FloatField(default=0.00)
     temp_min = models.FloatField(default=0.00)
 
     # pressure = models.FloatField(default=0.00, null=True)
-    pressure_avg = models.FloatField(default=0.00)
+    # pressure_avg = models.FloatField(default=0.00)
     pressure_max = models.FloatField(default=0.00)
     pressure_min = models.FloatField(default=0.00)
     # humidity = models.FloatField(default=0.00, null=True)
-    humidity_avg = models.FloatField(default=0.00)
+    # humidity_avg = models.FloatField(default=0.00)
     humidity_max = models.FloatField(default=0.00)
     humidity_min = models.FloatField(default=0.00)
     # pm1 = models.FloatField(default=0.00, null=True)
-    pm1_avg = models.FloatField(default=0.00)
+    # pm1_avg = models.FloatField(default=0.00)
     pm1_max = models.FloatField(default=0.00)
     pm1_min = models.FloatField(default=0.00)
     # pm2_5 = models.FloatField(default=0.00, null=True)
-    pm2_5_avg = models.FloatField(default=0.00)
+    # pm2_5_avg = models.FloatField(default=0.00)
     pm2_5_max = models.FloatField(default=0.00)
     pm2_5_min = models.FloatField(default=0.00)
     # pm10 = models.FloatField(default=0.00, null=True)
-    pm10_avg = models.FloatField(default=0.00)
+    # pm10_avg = models.FloatField(default=0.00)
     pm10_max = models.FloatField(default=0.00)
     pm10_min = models.FloatField(default=0.00)
-
     date_time = models.DateTimeField(null=True, blank=True)
-    date_timestamp = models.DateTimeField(default=datetime.now, blank=True)
-
+    # date_timestamp = models.DateTimeField(default=datetime.now, blank=True)
+    day = models.CharField(max_length=60, default='')
     # class Meta:
     #     unique_together = ['history_id']
     class Meta:

@@ -67,7 +67,7 @@ class WeatherViewset(viewsets.ModelViewSet):
         for j in chunked_names:
             name = join(j, ",")
             what = "loc"
-            apikey = "155078.nzsdK4hEn2R2n13o"
+            apikey = "149072.5M4NG9sB5ZNWSCx"
             # 149072.5M4NG9sB5ZNWSCx
             # 155078.nzsdK4hEn2R2n13o
             format = "json"
@@ -81,6 +81,7 @@ class WeatherViewset(viewsets.ModelViewSet):
                 date_time = datetime.fromtimestamp(int(timestamp))
                 timezone = pytz.timezone("Asia/Bangkok")
                 i['date_time'] = date_time.astimezone(timezone)
+                i['day'] = i['date_time'].strftime('%A')
                 date_data.update(i)
                 i.update(date_data)
                 obj, is_created = ReportStation.objects.update_or_create(name=i["name"])
@@ -132,7 +133,7 @@ class WeatherViewset(viewsets.ModelViewSet):
         for j in chunked_names:
             name = join(j, ",")
             what = "wx"
-            apikey = "155078.nzsdK4hEn2R2n13o"
+            apikey = "149072.5M4NG9sB5ZNWSCx"
             format = "json"
             PARAMS = {'name': name, 'what': what, 'apikey': apikey, 'format': format}
             response = requests.get(url=URL, params=PARAMS)
@@ -149,6 +150,7 @@ class WeatherViewset(viewsets.ModelViewSet):
                 date_time = datetime.fromtimestamp(int(timestamp))
                 timezone = pytz.timezone("Asia/Bangkok")
                 i['date_time'] = date_time.astimezone(timezone)
+                i['day'] = i['date_time'].strftime('%A')
                 date_data.update(i)
                 i.update(date_data)
                 obj, is_created = WeatherData.objects.update_or_create(name=i["name"])
@@ -169,7 +171,8 @@ class WeatherViewset(viewsets.ModelViewSet):
                     try:
                         edit_datedata = data[3].astimezone(timezone)
                         local_data = edit_datedata.strftime('%m/%d/%Y')
-                        tuple_data = (data[0],data[1],data[2],local_data,data[4],data[5],data[6],data[7],data[8],)
+                        day = edit_datedata.strftime('%A')
+                        tuple_data = (data[0],data[1],data[2],local_data,data[4],data[5],data[6],data[7],data[8],day)
                     except:
                         pass
                     writer.writerow(tuple_data)
@@ -178,21 +181,54 @@ class WeatherViewset(viewsets.ModelViewSet):
                 writer = csv.writer(f)
                 writer.writerow(['id', 'name', 'temp', 'date_time', ])
                 for data in WeatherData.objects.all().values_list('id', 'name','temp','date_time', 'pressure'
-                        , 'humidity','pm1','pm2_5','pm10', ):
+                        , 'humidity','pm1','pm2_5','pm10', 'day_name'):
                     timezone = pytz.timezone("Asia/Bangkok")
                     try:
                         edit_datedata = data[3].astimezone(timezone)
                         local_data = edit_datedata.strftime('%m/%d/%Y')
-                        tuple_data = (data[0],data[1],data[2],local_data,data[4],data[5],data[6],data[7],data[8],)
+                        day = edit_datedata.strftime('%A')
+                        tuple_data = (data[0],data[1],data[2],local_data,data[4],data[5],data[6],data[7],data[8],day)
                     except:
                         pass
                     writer.writerow(tuple_data)
+
+    def write_colums(self):
+        df = pd.read_csv('./weather/weather_history.csv')
+        dict_all={}
+        list_data=[]
+        for row in df.iterrows():
+            # print(type(row[1][3]))
+            # print(row[1][3])
+            d_f={}
+            # print(row[1][4])
+            str_date=str(row[1][3])
+            date_time_obj = dt.datetime.strptime(str_date, '%m/%d/%Y')
+            # print(date_time_obj)
+            d_f['weekofday'] = date_time_obj.strftime('%A')
+            dict_all.update(d_f)
+            dict_all_copy = dict_all.copy()
+            list_data.append(dict_all_copy)
+        # print(list_data)
+        days=[d['weekofday'] for d in list_data if 'weekofday' in d]
+        # print(list_data['weekofday'])
+        df['day']=days
+        # print(df)
+        df.to_csv('./weather/weather_history.csv',index=False)
+        print(df)
+        # df['day']=df_day['day']
+
+        # print(df)
+
+
+
+
+
 
     def add_data_history(self):
         data_df = pd.read_csv('./weather/weather_history.csv')
         data_df = data_df.reset_index()
         # df=data_df[['id','name','temp','date_time']].groupby(['name','date_time']).agg({'temp':['mean','max','min']})
-        d_f= data_df[['id','name','temp','pressure','humidity','pm1','pm2_5','pm10','date_time']].groupby(['name','date_time']).agg({'temp':['mean','max','min'],
+        d_f= data_df[['id','name','temp','pressure','humidity','pm1','pm2_5','pm10','date_time','day']].groupby(['name','date_time']).agg({'temp':['mean','max','min'],
                                                                                           'pressure':['mean','max','min'],
                                                                                           'humidity':['mean','max','min'],
                                                                                           'pm1':['mean','max','min'],
@@ -203,22 +239,26 @@ class WeatherViewset(viewsets.ModelViewSet):
         list_data=[]
         for row in d_f.iterrows():
             dict_data={}
+            # print(row)
             dict_data['name'],dict_data['temp_avg'],dict_data['temp_max'],dict_data['temp_min'],dict_data['date_time']=row[0][0],row[1][0],row[1][1],row[1][2],row[0][1]
             # print(dict_data['date_time'])
             dict_data['pressure_avg'], dict_data['pressure_max'], dict_data['pressure_min'] = row[1][3], row[1][4],row[1][5]
-            dict_data['humidity'], dict_data['humidity_max'], dict_data['humidity_min'] = row[1][6], row[1][7], row[1][8]
-            dict_data['pm1'], dict_data['pm1_max'], dict_data['pm1_min'] = row[1][9], row[1][10], row[1][11]
+            dict_data['humidity_avg'], dict_data['humidity_max'], dict_data['humidity_min'] = row[1][6], row[1][7], row[1][8]
+            dict_data['pm1_avg'], dict_data['pm1_max'], dict_data['pm1_min'] = row[1][9], row[1][10], row[1][11]
             dict_data['pm2_5_avg'], dict_data['pm2_5_max'], dict_data['pm2_5_min'] = row[1][12], row[1][13], row[1][14]
             dict_data['pm10_avg'], dict_data['pm10_max'], dict_data['pm10_min'] = row[1][15], row[1][16], row[1][17]
             date_time_str = dict_data['date_time']
             date_time_obj = dt.datetime.strptime(date_time_str,'%m/%d/%Y')
+            # dict_data['day_name'] = date_time_obj.dt.weekday_name
             str_datetime = date_time_obj.strftime('%Y-%m-%d')
             date_time_obj=dt.datetime.strptime(str_datetime,'%Y-%m-%d')
-            print(date_time_obj)
+            dict_data['day'] = date_time_obj.strftime('%A')
+            # print(date_time_obj)
             dict_data['date_time'] = date_time_obj
             dict_all.update(dict_data)
             dict_all_copy = dict_all.copy()
             list_data.append(dict_all_copy)
+        print(list_data)
         for data in list_data:
             # print(data)
             obj, is_created = WeatherHistory.objects.update_or_create(name=data["name"],date_time=data['date_time'])
@@ -227,21 +267,21 @@ class WeatherViewset(viewsets.ModelViewSet):
                 setattr(obj, j, data[j])
             obj.save()
 
-        with open('./weather/weather_forecast.csv', 'w') as f:
-
-            writer = csv.writer(f)
-            writer.writerow(['id', 'name', 'temp_avg', 'temp_max', 'temp_min','date_time',])
-
-            for data in WeatherHistory.objects.all().values_list('id', 'name',
-                                                'temp_avg', 'temp_max', 'temp_min','date_time', ):
-                timezone = pytz.timezone("Asia/Bangkok")
-                try:
-                    edit_datedata = data[5].astimezone(timezone)
-                    local_data = edit_datedata.strftime('%Y-%m-%d')
-                    tuple_data = (data[0],data[1],data[2],data[3],data[4],local_data)
-                except:
-                    pass
-                writer.writerow(tuple_data)
+        # with open('./weather/weather_forecast.csv', 'w') as f:
+        #
+        #     writer = csv.writer(f)
+        #     writer.writerow(['id', 'name', 'temp_avg', 'temp_max', 'temp_min','date_time',])
+        #
+        #     for data in WeatherHistory.objects.all().values_list('id', 'name',
+        #                                         'temp_avg', 'temp_max', 'temp_min','date_time', ):
+        #         timezone = pytz.timezone("Asia/Bangkok")
+        #         try:
+        #             edit_datedata = data[5].astimezone(timezone)
+        #             local_data = edit_datedata.strftime('%Y-%m-%d')
+        #             tuple_data = (data[0],data[1],data[2],data[3],data[4],local_data)
+        #         except:
+        #             pass
+        #         writer.writerow(tuple_data)
 
     def forecast(df):
         plt.rcParams['figure.figsize'] = (20, 10)
