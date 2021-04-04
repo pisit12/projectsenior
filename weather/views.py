@@ -267,21 +267,21 @@ class WeatherViewset(viewsets.ModelViewSet):
                 setattr(obj, j, data[j])
             obj.save()
 
-        # with open('./weather/weather_forecast.csv', 'w') as f:
-        #
-        #     writer = csv.writer(f)
-        #     writer.writerow(['id', 'name', 'temp_avg', 'temp_max', 'temp_min','date_time',])
-        #
-        #     for data in WeatherHistory.objects.all().values_list('id', 'name',
-        #                                         'temp_avg', 'temp_max', 'temp_min','date_time', ):
-        #         timezone = pytz.timezone("Asia/Bangkok")
-        #         try:
-        #             edit_datedata = data[5].astimezone(timezone)
-        #             local_data = edit_datedata.strftime('%Y-%m-%d')
-        #             tuple_data = (data[0],data[1],data[2],data[3],data[4],local_data)
-        #         except:
-        #             pass
-        #         writer.writerow(tuple_data)
+        with open('./weather/weather_forecast.csv', 'w') as f:
+
+            writer = csv.writer(f)
+            writer.writerow(['id', 'name', 'temp_avg', 'temp_max', 'temp_min','date_time',])
+
+            for data in WeatherHistory.objects.all().values_list('id', 'name',
+                                                'temp_avg', 'temp_max', 'temp_min','date_time', ):
+                timezone = pytz.timezone("Asia/Bangkok")
+                try:
+                    edit_datedata = data[5].astimezone(timezone)
+                    local_data = edit_datedata.strftime('%Y-%m-%d')
+                    tuple_data = (data[0],data[1],data[2],data[3],data[4],local_data)
+                except:
+                    pass
+                writer.writerow(tuple_data)
 
     def forecast(df):
         plt.rcParams['figure.figsize'] = (20, 10)
@@ -366,11 +366,12 @@ class WeatherViewset(viewsets.ModelViewSet):
             train_df = train_df.rename(columns={'date_time': 'ds', 'temp_avg': 'y'})
             dict['name'] = train_df.values.tolist()[0][0]
             model = Prophet(
-                interval_width=0.95,
+                interval_width=0.90,
                 daily_seasonality=True,
                 # weekly_seasonality=True,
                 # yearly_seasonality=True,
-                changepoint_prior_scale=0.05
+                changepoint_prior_scale=0.10,
+
             )
             model.fit(train_df)
             test_pred = model.predict(train_df)
@@ -394,8 +395,7 @@ class WeatherViewset(viewsets.ModelViewSet):
             dict_forecast_copy = dict_forecast.copy()
             list_forecast.append(dict_forecast_copy)
         for datas in list_forecast:
-            obj, is_created = ForecastWeather.objects.update_or_create(name=datas['name'],
-                                                                       date_next_day=datas['date_next_day'])
+            obj, is_created = ForecastWeather.objects.update_or_create(name=datas['name'])
             for j in datas:
                 setattr(obj, j, datas[j])
             obj.save()

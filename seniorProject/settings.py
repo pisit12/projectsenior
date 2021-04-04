@@ -14,6 +14,8 @@ import os
 import sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# import development as development
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -26,7 +28,7 @@ SECRET_KEY = '%azncrui^ex5llbj1sw!#*du9pios#p5(2w%q$e_*ykre0m_g+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['161.246.5.197', 'localhost', '127.0.0.1',]
+ALLOWED_HOSTS = ['161.246.5.197', 'localhost', '127.0.0.1','a92dfb23f480.ngrok.io']
 
 
 # Application definition
@@ -57,18 +59,22 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+# SESSION_COOKIE_SECURE = False
+# CSRF_COOKIE_SECURE = False
+# SECURE_SSL_REDIRECT = True
+
 
 CORS_ORIGIN_ALLOW_ALL = True # If this is used then `CORS_ORIGIN_WHITELIST` will not have any effect
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:8000',
-] # If this is used, then not need to use `CORS_ORIGIN_ALLOW_ALL = True`
-CORS_ORIGIN_REGEX_WHITELIST = [
-    'http://localhost:8000',
-]
+# CORS_ORIGIN_WHITELIST = [
+#     'http://localhost:8000',
+# ] # If this is used, then not need to use `CORS_ORIGIN_ALLOW_ALL = True`
+# CORS_ORIGIN_REGEX_WHITELIST = [
+#     'http://localhost:8000',
+# ]
 
 
-BASE_URL = "http://localhost:8000"
+# BASE_URL = "http://localhost:8000"
 
 DEV_SERVER = len(sys.argv) > 1 and sys.argv[1] == "runserver"
 
@@ -175,5 +181,6 @@ STATIC_URL = '/static/'
 BASE_MEDIA = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = "/media/"
+
 
 
